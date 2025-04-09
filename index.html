@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="MemoryMatch - Test Your Brain & Win Rewards" />
+    <meta
+      name="description"
+      content="Play our exciting memory card game, match pairs, and win real cash rewards! Improve your memory skills while earning money. Sign up now for free and get a bonus!"
+    />
+    <meta
+      name="keywords"
+      content="memory game, card matching game, win money, brain game, online game, cash rewards, Nigeria"
+    />
+    <meta name="author" content="MemoryMatch" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#4361ee" />
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://memorymatch.onrender.com" />
+    <meta
+      property="og:title"
+      content="MemoryMatch - Test Your Brain & Win Rewards"
+    />
+    <meta
+      property="og:description"
+      content="Play our exciting memory card game, match pairs, and win real cash rewards! Improve your memory skills while earning money."
+    />
+    <meta
+      property="og:image"
+      content="https://th.bing.com/th/id/R.20ad40be7c424d6512e4d2e6a0cfbdd0?rik=9DfSsFJMZTdQ4Q&pid=ImgRaw&r=0"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://memorymatch.onrender.com" />
+    <meta
+      property="twitter:title"
+      content="MemoryMatch - Test Your Brain & Win Rewards"
+    />
+    <meta
+      property="twitter:description"
+      content="Play our exciting memory card game, match pairs, and win real cash rewards! Improve your memory skills while earning money."
+    />
+    <meta
+      property="twitter:image"
+      content="https://th.bing.com/th/id/R.20ad40be7c424d6512e4d2e6a0cfbdd0?rik=9DfSsFJMZTdQ4Q&pid=ImgRaw&r=0"
+    />
+
+    <!-- Favicon Links -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://th.bing.com/th/id/R.20ad40be7c424d6512e4d2e6a0cfbdd0?rik=9DfSsFJMZTdQ4Q&pid=ImgRaw&r=0"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://th.bing.com/th/id/R.20ad40be7c424d6512e4d2e6a0cfbdd0?rik=9DfSsFJMZTdQ4Q&pid=ImgRaw&r=0"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://th.bing.com/th/id/R.20ad40be7c424d6512e4d2e6a0cfbdd0?rik=9DfSsFJMZTdQ4Q&pid=ImgRaw&r=0"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4361ee" />
+    <meta name="msapplication-TileColor" content="#4361ee" />
+
+    <title>MemoryMatch - Test Your Brain & Win Rewards</title>
+
+    <title>Memory Match - Test Your Brain & Win Rewards</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      /* Header Styles */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 20px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .logo i {
+        font-size: 28px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .nav-links a:hover {
+        opacity: 0.8;
+      }
+
+      .cta-button {
+        background-color: white;
+        color: var(--primary);
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 80px 0;
+        display: flex;
+        align-items: center;
+        gap: 50px;
+      }
+
+      .hero-content {
+        flex: 1;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      .hero p {
+        font-size: 18px;
+        margin-bottom: 30px;
+        color: #555;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      }
+
+      .btn-outline {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        background-color: transparent;
+      }
+
+      .btn-outline:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .stats {
+        display: flex;
+        gap: 30px;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stat-number {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .hero-image {
+        flex: 1;
+        position: relative;
+        min-height: 400px;
+      }
+
+      /* Game Demo Section */
+      .game-demo {
+        position: relative;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        height: 400px;
+        overflow: hidden;
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .demo-card {
+        aspect-ratio: 1/1;
+        border-radius: 8px;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .demo-card.flipped {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+      }
+
+      .demo-card.matched {
+        background-color: var(--success);
+        cursor: default;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+      }
+
+      .card-back {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .card-front {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+        border: 1px solid #eee;
+      }
+
+      .demo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        z-index: 10;
+        opacity: 1;
+        transition: opacity 0.5s;
+      }
+
+      .demo-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .demo-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 10px;
+      }
+
+      .demo-description {
+        text-align: center;
+        max-width: 400px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 80px 0;
+        background-color: white;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-title h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 15px;
+      }
+
+      .section-title p {
+        font-size: 18px;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .feature-card {
+        background-color: var(--light);
+        border-radius: 12px;
+        padding: 30px;
+        transition: all 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary);
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      .feature-card h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--dark);
+      }
+
+      .feature-card p {
+        color: #666;
+      }
+
+      /* How It Works Section */
+      .how-it-works {
+        padding: 80px 0;
+        background-color: var(--light);
+      }
+
+      .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .step {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .step-number {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .step-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--dark);
+      }
+
+      .step-content p {
+        color: #666;
+      }
+
+      /* Testimonials */
+      .testimonials {
+        padding: 80px 0;
+        background-color: white;
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .testimonial-card {
+        background-color: var(--light);
+        border-radius: 12px;
+        padding: 30px;
+        position: relative;
+      }
+
+      .testimonial-card::before {
+        content: '"';
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 60px;
+        color: rgba(67, 97, 238, 0.1);
+        font-family: serif;
+        line-height: 1;
+      }
+
+      .testimonial-content {
+        margin-bottom: 20px;
+        color: #555;
+        font-style: italic;
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: 600;
+      }
+
+      .author-info h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .author-info p {
+        font-size: 14px;
+        color: #777;
+      }
+
+      /* CTA Section */
+      .cta-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        text-align: center;
+      }
+
+      .cta-section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .cta-section p {
+        font-size: 18px;
+        max-width: 700px;
+        margin: 0 auto 30px;
+        opacity: 0.9;
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--dark);
+        color: white;
+        padding: 50px 0 20px;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-column h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .footer-links {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+
+      .footer-links a {
+        color: #bbb;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: white;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-links a {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        transition: all 0.3s;
+      }
+
+      .social-links a:hover {
+        background-color: var(--primary);
+        transform: translateY(-3px);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #bbb;
+        font-size: 14px;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 1024px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .hero-buttons,
+        .stats {
+          justify-content: center;
+        }
+
+        .hero-image {
+          width: 100%;
+          min-height: 300px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .hero h1 {
+          font-size: 36px;
+        }
+
+        .hero p {
+          font-size: 16px;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .stats {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .section-title h2 {
+          font-size: 28px;
+        }
+
+        .section-title p {
+          font-size: 16px;
+        }
+
+        .game-board {
+          grid-template-columns: repeat(4, 1fr);
+          max-width: 300px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .game-board {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+          max-width: 280px;
+        }
+
+        .demo-card {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <div class="logo">
+            <i class="fas fa-brain"></i>
+            <span>MemoryMatch</span>
+          </div>
+          <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="auth.html" class="cta-button">Play Now</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Test Your Memory Skills & Win Exciting Rewards</h1>
+          <p>
+            MemoryMatch is a fun and challenging game that tests your cognitive
+            abilities while giving you the chance to earn real rewards. Play now
+            and see how much you can win!
+          </p>
+
+          <div class="hero-buttons">
+            <a href="auth.html" class="btn btn-primary">
+              <i class="fas fa-play"></i> Play Now
+            </a>
+            <a href="#how-it-works" class="btn btn-outline">
+              <i class="fas fa-info-circle"></i> Learn More
+            </a>
+          </div>
+
+          <div class="stats">
+            <div class="stat-item">
+              <span class="stat-number">10,000+</span>
+              <span class="stat-label">Active Players</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">₦5M+</span>
+              <span class="stat-label">Paid Out</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">98%</span>
+              <span class="stat-label">Satisfaction</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <div class="game-demo">
+            <div class="demo-overlay" id="demoOverlay">
+              <h3 class="demo-title">Memory Match Game</h3>
+              <p class="demo-description">
+                Match pairs of cards to win rewards. The faster you match, the
+                more you can earn!
+              </p>
+              <button class="btn btn-primary" id="startDemoBtn">
+                <i class="fas fa-play"></i> Start Demo
+              </button>
+            </div>
+            <div class="game-board" id="demoGameBoard"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-title">
+          <h2>Why Play MemoryMatch?</h2>
+          <p>
+            Our game offers a unique combination of fun, challenge, and real
+            rewards that keeps players coming back
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <h3>Win Real Rewards</h3>
+            <p>
+              Earn cash rewards for every successful match. The more you play,
+              the more you can win!
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3>Improve Memory</h3>
+            <p>
+              Scientific studies show that memory games can help improve
+              cognitive function and memory retention.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Secure & Fair</h3>
+            <p>
+              Our platform uses advanced security measures to ensure fair play
+              and protect your information.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Play Anywhere</h3>
+            <p>
+              Access the game from any device - desktop, tablet, or mobile
+              phone. Play anytime, anywhere.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-gift"></i>
+            </div>
+            <h3>Daily Bonuses</h3>
+            <p>
+              Get free bonus credits just for logging in daily. Plus, special
+              rewards for consistent players.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3>24/7 Support</h3>
+            <p>
+              Our dedicated support team is available around the clock to assist
+              you with any questions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+      <div class="container">
+        <div class="section-title">
+          <h2>How To Play</h2>
+          <p>
+            Getting started with MemoryMatch is quick and easy. Follow these
+            simple steps to begin playing and winning
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Create Your Account</h3>
+              <p>
+                Sign up for free in just a few seconds. All you need is an email
+                address to get started.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Fund Your Wallet</h3>
+              <p>
+                Add funds to your wallet using any of our secure payment
+                methods. Get a 100% bonus on your first deposit!
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Place Your Bet</h3>
+              <p>
+                Choose how much you want to bet on each game. Higher bets mean
+                higher potential rewards.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Play & Win</h3>
+              <p>
+                Match pairs of cards before time runs out. Each successful match
+                earns you rewards!
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <h3>Withdraw Your Winnings</h3>
+              <p>
+                Cash out your earnings anytime. Fast withdrawals processed
+                within 24 hours.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+      <div class="container">
+        <div class="section-title">
+          <h2>What Players Say</h2>
+          <p>
+            Don't just take our word for it. Here's what our players have to say
+            about their experience
+          </p>
+        </div>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              "I've been playing MemoryMatch for 3 months now and I'm hooked!
+              Not only is it fun, but I've actually made over ₦50,000 in
+              winnings. The withdrawals are super fast too."
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">AO</div>
+              <div class="author-info">
+                <h4>Adeola O.</h4>
+                <p>Lagos, Nigeria</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              "As someone who loves brain games, this is perfect. I get to
+              challenge myself and earn money at the same time. The customer
+              support is excellent whenever I have questions."
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">CB</div>
+              <div class="author-info">
+                <h4>Chinedu B.</h4>
+                <p>Abuja, Nigeria</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              "I was skeptical at first, but after trying it out I'm impressed.
+              The game is fair, the interface is clean, and I've withdrawn my
+              winnings multiple times without issues."
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">FE</div>
+              <div class="author-info">
+                <h4>Funke E.</h4>
+                <p>Ibadan, Nigeria</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <h2>Ready To Start Winning?</h2>
+        <p>
+          Join thousands of players who are already enjoying MemoryMatch and
+          earning real rewards. Sign up now and get a ₦500 bonus on your first
+          deposit!
+        </p>
+        <a
+          href="auth.html"
+          class="btn btn-primary"
+          style="background-color: white; color: var(--primary)"
+        >
+          <i class="fas fa-play"></i> Play Now - It's Free
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>MemoryMatch</h3>
+            <p>
+              Test your memory skills and win exciting rewards. The most fun way
+              to challenge your brain!
+            </p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="auth.html">Play Now</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#testimonials">Testimonials</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3>Legal</h3>
+            <ul class="footer-links">
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Responsible Gaming</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3>Contact Us</h3>
+            <ul class="footer-links">
+              <li>
+                <a href="mailto:support@memorymatch.com"
+                  >aladefavour134@gmail.com</a
+                >
+              </li>
+              <li><a href="tel:+2348123456789">+234 8100921760</a></li>
+              <li>Lagos, Nigeria</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 MemoryMatch. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Demo Game Animation
+      const demoOverlay = document.getElementById("demoOverlay");
+      const startDemoBtn = document.getElementById("startDemoBtn");
+      const demoGameBoard = document.getElementById("demoGameBoard");
+
+      // Emojis for the demo game
+      const demoEmojis = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊"];
+      let demoCards = [];
+      let demoFlippedCards = [];
+      let demoMatchedPairs = 0;
+      let demoGameActive = false;
+      let demoAutoPlayInterval;
+
+      // Initialize demo game
+      function initDemoGame() {
+        demoGameBoard.innerHTML = "";
+        demoFlippedCards = [];
+        demoMatchedPairs = 0;
+
+        // Create pairs of cards
+        const gameEmojis = [...demoEmojis, ...demoEmojis];
+        demoCards = shuffleArray(gameEmojis);
+
+        // Create card elements
+        demoCards.forEach((emoji, index) => {
+          const card = document.createElement("div");
+          card.className = "demo-card";
+          card.dataset.index = index;
+          card.dataset.value = emoji;
+
+          const cardBack = document.createElement("div");
+          cardBack.className = "card-back";
+          cardBack.innerHTML = '<i class="fas fa-question"></i>';
+
+          const cardFront = document.createElement("div");
+          cardFront.className = "card-front";
+          cardFront.textContent = emoji;
+
+          card.appendChild(cardBack);
+          card.appendChild(cardFront);
+
+          demoGameBoard.appendChild(card);
+        });
+
+        demoGameActive = true;
+        startAutoPlay();
+      }
+
+      // Shuffle array function
+      function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+      }
+
+      // Flip card function for demo
+      function flipDemoCard(cardIndex) {
+        if (!demoGameActive) return;
+
+        const card = demoGameBoard.children[cardIndex];
+
+        if (
+          card.classList.contains("flipped") ||
+          card.classList.contains("matched") ||
+          demoFlippedCards.length >= 2
+        ) {
+          return;
+        }
+
+        card.classList.add("flipped");
+        demoFlippedCards.push(card);
+
+        if (demoFlippedCards.length === 2) {
+          checkDemoMatch();
+        }
+      }
+
+      // Check for matching cards in demo
+      function checkDemoMatch() {
+        const [card1, card2] = demoFlippedCards;
+
+        if (card1.dataset.value === card2.dataset.value) {
+          // Match found
+          card1.classList.add("matched");
+          card2.classList.add("matched");
+          demoFlippedCards = [];
+          demoMatchedPairs++;
+
+          if (demoMatchedPairs === demoEmojis.length) {
+            // All pairs matched
+            setTimeout(() => {
+              resetDemoGame();
+            }, 2000);
+          }
+        } else {
+          // No match, flip cards back after delay
+          setTimeout(() => {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            demoFlippedCards = [];
+          }, 1000);
+        }
+      }
+
+      // Start auto play for demo
+      function startAutoPlay() {
+        let moves = 0;
+        const totalMoves = 12; // Number of moves to demonstrate
+
+        demoAutoPlayInterval = setInterval(() => {
+          if (moves >= totalMoves) {
+            clearInterval(demoAutoPlayInterval);
+            setTimeout(() => {
+              resetDemoGame();
+            }, 2000);
+            return;
+          }
+
+          // Find unflipped, unmatched cards
+          const availableCards = Array.from(demoGameBoard.children).filter(
+            (card) =>
+              !card.classList.contains("flipped") &&
+              !card.classList.contains("matched")
+          );
+
+          if (availableCards.length > 1) {
+            // Randomly select two cards to flip
+            const randomIndex1 = Math.floor(
+              Math.random() * availableCards.length
+            );
+            let randomIndex2;
+
+            do {
+              randomIndex2 = Math.floor(Math.random() * availableCards.length);
+            } while (randomIndex2 === randomIndex1);
+
+            const card1 = availableCards[randomIndex1];
+            const card2 = availableCards[randomIndex2];
+
+            const card1Index = Array.from(demoGameBoard.children).indexOf(
+              card1
+            );
+            const card2Index = Array.from(demoGameBoard.children).indexOf(
+              card2
+            );
+
+            flipDemoCard(card1Index);
+
+            setTimeout(() => {
+              flipDemoCard(card2Index);
+              moves++;
+            }, 500);
+          }
+        }, 2000);
+      }
+
+      // Reset demo game
+      function resetDemoGame() {
+        demoGameActive = false;
+        clearInterval(demoAutoPlayInterval);
+
+        // Flip all cards back
+        Array.from(demoGameBoard.children).forEach((card) => {
+          card.classList.remove("flipped", "matched");
+        });
+
+        // Show overlay again after delay
+        setTimeout(() => {
+          demoOverlay.classList.remove("hidden");
+          setTimeout(initDemoGame, 3000);
+        }, 2000);
+      }
+
+      // Start demo button click
+      startDemoBtn.addEventListener("click", () => {
+        demoOverlay.classList.add("hidden");
+        setTimeout(initDemoGame, 500);
+      });
+
+      // Initialize demo game on page load (starts after overlay)
+      window.addEventListener("load", () => {
+        setTimeout(initDemoGame, 3000);
+      });
+    </script>
+  </body>
+</html>

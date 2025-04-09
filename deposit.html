@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deposit Funds - Memory Game</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .back-btn {
+        padding: 8px 15px;
+        background-color: var(--light);
+        color: var(--dark);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .back-btn:hover {
+        background-color: #e9ecef;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 30px;
+      }
+
+      .deposit-container {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .bank-details {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        flex: 1;
+      }
+
+      .bank-details h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: var(--dark);
+      }
+
+      .bank-info {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .bank-info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .bank-info-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .bank-info-label {
+        font-weight: 500;
+        color: #666;
+      }
+
+      .bank-info-value {
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .copy-btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .copy-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .instructions {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        flex: 1;
+      }
+
+      .instructions h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: var(--dark);
+      }
+
+      .instructions ol {
+        padding-left: 20px;
+      }
+
+      .instructions li {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .instructions .note {
+        background-color: #fff8e1;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #e65100;
+      }
+
+      .action-section {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .confirm-btn {
+        padding: 12px 30px;
+        background-color: var(--success);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+      }
+
+      .confirm-btn:hover {
+        background-color: #3ab7d8;
+        transform: translateY(-2px);
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        padding: 25px;
+        animation: modalFadeIn 0.3s ease;
+        position: relative;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .modal-body {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .submit-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .cancel-btn {
+        background-color: #f1f3f5;
+        color: var(--dark);
+      }
+
+      /* Success modal */
+      .success-modal .modal-content {
+        text-align: center;
+      }
+
+      .success-icon {
+        font-size: 60px;
+        color: var(--success);
+        margin-bottom: 20px;
+      }
+
+      .success-message {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: var(--dark);
+      }
+
+      .pending-message {
+        background-color: #fff3cd;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        color: #856404;
+      }
+
+      @media (max-width: 768px) {
+        .deposit-container {
+          flex-direction: column;
+        }
+
+        .bank-details,
+        .instructions {
+          flex: none;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .page-title {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <button class="back-btn" id="backBtn">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+      </header>
+
+      <h1 class="page-title">Deposit Funds</h1>
+
+      <div class="deposit-container">
+        <div class="bank-details">
+          <h2>Bank Transfer Details</h2>
+          <div class="bank-info">
+            <div class="bank-info-item">
+              <span class="bank-info-label">Bank Name:</span>
+              <span class="bank-info-value">Moniepoint MFB</span>
+            </div>
+            <div class="bank-info-item">
+              <span class="bank-info-label">Account Number:</span>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span class="bank-info-value" id="accountNumber"
+                  >5555969924</span
+                >
+                <button
+                  class="copy-btn"
+                  onclick="copyToClipboard('accountNumber')"
+                >
+                  <i class="far fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+            <div class="bank-info-item">
+              <span class="bank-info-label">Account Name:</span>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span class="bank-info-value" id="accountName"
+                  >PRECIOUS AHUEKWE</span
+                >
+                <button
+                  class="copy-btn"
+                  onclick="copyToClipboard('accountName')"
+                >
+                  <i class="far fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="note">
+            <strong>Note:</strong> Minimum deposit amount is ₦500. Deposits
+            below this amount will not be credited to your account.
+          </div>
+        </div>
+
+        <div class="instructions">
+          <h2>How to Deposit</h2>
+          <ol>
+            <li>Open your mobile banking app or internet banking</li>
+            <li>Select "Transfer" or "Send Money" option</li>
+            <li>Choose "Bank Transfer" or "Other Banks"</li>
+            <li>Enter the account details provided above</li>
+            <li>Input the amount you wish to deposit (minimum ₦500)</li>
+            <li>Complete the transaction and keep the receipt</li>
+            <li>Click "I've made the transaction" button below</li>
+            <li>Fill in the transaction details for verification</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="action-section">
+        <button class="confirm-btn" id="confirmTransactionBtn">
+          <i class="fas fa-check-circle"></i> I've made the transaction
+        </button>
+      </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal" id="transactionModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Transaction Details</h2>
+          <button class="close-modal" id="closeTransactionModal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Please provide details of your bank transfer for verification:</p>
+          <form id="transactionForm">
+            <div class="form-group">
+              <label for="senderName"
+                >Your Full Name (as on bank account)</label
+              >
+              <input
+                type="text"
+                id="senderName"
+                required
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="senderBank">Your Bank Name</label>
+              <input
+                type="text"
+                id="senderBank"
+                required
+                placeholder="Enter your bank name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="amountSent">Amount Sent (₦)</label>
+              <input
+                type="number"
+                id="amountSent"
+                required
+                min="500"
+                placeholder="Enter amount sent"
+              />
+            </div>
+            <div class="form-group">
+              <label for="transactionRef"
+                >Transaction Reference (optional)</label
+              >
+              <input
+                type="text"
+                id="transactionRef"
+                placeholder="Enter transaction reference if available"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn cancel-btn" id="cancelTransactionBtn">
+            Cancel
+          </button>
+          <button class="modal-btn submit-btn" id="submitTransactionBtn">
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal success-modal" id="successModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Deposit Submitted</h2>
+          <button class="close-modal" id="closeSuccessModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <p class="success-message">
+            Your deposit request has been submitted successfully!
+          </p>
+          <div class="pending-message">
+            <i class="fas fa-clock"></i> Waiting for admin approval. Your funds
+            will be credited within 5 minutes after verification.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn submit-btn" id="returnToDashboardBtn">
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Firebase configuration (same as dashboard.html)
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+        authDomain: "moniebase-b4b4d.firebaseapp.com",
+        projectId: "moniebase-b4b4d",
+        storageBucket: "moniebase-b4b4d.appspot.com",
+        messagingSenderId: "1009678808253",
+        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const backBtn = document.getElementById("backBtn");
+      const confirmTransactionBtn = document.getElementById(
+        "confirmTransactionBtn"
+      );
+      const transactionModal = document.getElementById("transactionModal");
+      const closeTransactionModal = document.getElementById(
+        "closeTransactionModal"
+      );
+      const cancelTransactionBtn = document.getElementById(
+        "cancelTransactionBtn"
+      );
+      const submitTransactionBtn = document.getElementById(
+        "submitTransactionBtn"
+      );
+      const transactionForm = document.getElementById("transactionForm");
+      const successModal = document.getElementById("successModal");
+      const closeSuccessModal = document.getElementById("closeSuccessModal");
+      const returnToDashboardBtn = document.getElementById(
+        "returnToDashboardBtn"
+      );
+
+      // User data variables
+      let userId;
+      let userEmail;
+      let userPhone;
+
+      // Copy to clipboard function
+      function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          // Change button text temporarily
+          const buttons = document.querySelectorAll(
+            `[onclick="copyToClipboard('${elementId}')"]`
+          );
+          buttons.forEach((button) => {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+              button.innerHTML = originalText;
+            }, 2000);
+          });
+        });
+      }
+
+      // Show transaction modal
+      confirmTransactionBtn.addEventListener("click", () => {
+        transactionModal.style.display = "flex";
+      });
+
+      // Close transaction modal
+      closeTransactionModal.addEventListener("click", () => {
+        transactionModal.style.display = "none";
+      });
+
+      cancelTransactionBtn.addEventListener("click", () => {
+        transactionModal.style.display = "none";
+      });
+
+      // Close success modal
+      closeSuccessModal.addEventListener("click", () => {
+        successModal.style.display = "none";
+        window.location.href = "dashboard.html";
+      });
+
+      returnToDashboardBtn.addEventListener("click", () => {
+        successModal.style.display = "none";
+        window.location.href = "dashboard.html";
+      });
+
+      // Submit transaction details
+      submitTransactionBtn.addEventListener("click", () => {
+        const senderName = document.getElementById("senderName").value;
+        const senderBank = document.getElementById("senderBank").value;
+        const amountSent = document.getElementById("amountSent").value;
+        const transactionRef = document.getElementById("transactionRef").value;
+
+        // Validate amount
+        if (parseFloat(amountSent) < 500) {
+          alert("Minimum deposit amount is ₦500");
+          return;
+        }
+
+        // Show loading state
+        submitTransactionBtn.disabled = true;
+        submitTransactionBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+        // Create deposit record
+        const depositData = {
+          userId: userId,
+          userEmail: userEmail,
+          userPhone: userPhone,
+          senderName: senderName,
+          senderBank: senderBank,
+          amount: parseFloat(amountSent),
+          transactionRef: transactionRef || "N/A",
+          status: "pending",
+          timestamp: Date.now(),
+          approved: false,
+        };
+
+        // Save to Firebase
+        database
+          .ref("deposits/" + userId + "_" + Date.now())
+          .set(depositData)
+          .then(() => {
+            // Hide transaction modal and show success modal
+            transactionModal.style.display = "none";
+            successModal.style.display = "flex";
+
+            // Reset form
+            transactionForm.reset();
+            submitTransactionBtn.disabled = false;
+            submitTransactionBtn.innerHTML = "Submit";
+          })
+          .catch((error) => {
+            alert("Error submitting transaction: " + error.message);
+            submitTransactionBtn.disabled = false;
+            submitTransactionBtn.innerHTML = "Submit";
+          });
+      });
+
+      // Back to dashboard
+      backBtn.addEventListener("click", () => {
+        window.location.href = "dashboard.html";
+      });
+
+      // Check authentication state and load user data
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          userId = user.uid;
+          userEmail = user.email;
+
+          // Load user data from database
+          database
+            .ref("users/" + userId)
+            .once("value")
+            .then((snapshot) => {
+              const userData = snapshot.val();
+              if (userData) {
+                userPhone = userData.phone;
+              }
+            })
+            .catch((error) => {
+              console.error("Error loading user data:", error);
+            });
+        } else {
+          // No user is signed in, redirect to auth page
+          window.location.href = "auth.html";
+        }
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target === transactionModal) {
+          transactionModal.style.display = "none";
+        }
+        if (event.target === successModal) {
+          successModal.style.display = "none";
+          window.location.href = "dashboard.html";
+        }
+      });
+    </script>
+  </body>
+</html>

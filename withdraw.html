@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Withdraw Funds - Memory Game</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+        /* flex-direction: column; */
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .back-btn {
+        padding: 8px 15px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .back-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .withdraw-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+      }
+
+      .withdraw-card h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .withdraw-card h2 i {
+        color: var(--primary);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .balance-info {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .balance-info p {
+        font-size: 16px;
+        color: #666;
+      }
+
+      .balance-amount {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .proceed-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .proceed-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .proceed-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .transactions-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .transactions-section h3 {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .transactions-section h3 i {
+        color: var(--primary);
+      }
+
+      .transactions-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .transaction-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .transaction-item:last-child {
+        border-bottom: none;
+      }
+
+      .transaction-details {
+        flex: 1;
+      }
+
+      .transaction-amount {
+        font-weight: 600;
+        margin-left: 15px;
+      }
+
+      .transaction-success {
+        color: var(--success);
+      }
+
+      .transaction-pending {
+        color: var(--warning);
+      }
+
+      .transaction-failed {
+        color: var(--danger);
+      }
+
+      .transaction-date {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      .no-transactions {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        padding: 25px;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .modal-body {
+        margin-bottom: 20px;
+      }
+
+      .modal-body p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .confirm-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .cancel-btn {
+        background-color: #f0f0f0;
+        color: var(--dark);
+      }
+
+      .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 10px;
+      }
+
+      .status-success {
+        background-color: rgba(76, 201, 240, 0.1);
+        color: var(--success);
+      }
+
+      .status-pending {
+        background-color: rgba(248, 150, 30, 0.1);
+        color: var(--warning);
+      }
+
+      .status-failed {
+        background-color: rgba(247, 37, 133, 0.1);
+        color: var(--danger);
+      }
+
+      /* Loading spinner */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+        }
+
+        .withdraw-card {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .balance-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="dashboard.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1>Withdraw Funds</h1>
+      </header>
+
+      <div class="withdraw-card">
+        <h2><i class="fas fa-wallet"></i> Withdrawal Details</h2>
+
+        <div class="balance-info">
+          <p>Available Balance:</p>
+          <div class="balance-amount" id="walletBalance">₦0.00</div>
+        </div>
+
+        <form id="withdrawForm">
+          <div class="form-group">
+            <label for="bankName">Bank Name</label>
+            <select id="bankName" required>
+              <option value="">Select Bank</option>
+              <option value="Access Bank">Access Bank</option>
+              <option value="Citibank">Citibank</option>
+              <option value="Ecobank">Ecobank</option>
+              <option value="Fidelity Bank">Fidelity Bank</option>
+              <option value="First Bank">First Bank</option>
+              <option value="GTBank">GTBank</option>
+              <option value="Heritage Bank">Heritage Bank</option>
+              <option value="Keystone Bank">Keystone Bank</option>
+              <option value="Polaris Bank">Polaris Bank</option>
+              <option value="Stanbic IBTC">Stanbic IBTC</option>
+              <option value="Standard Chartered">Standard Chartered</option>
+              <option value="Sterling Bank">Sterling Bank</option>
+              <option value="UBA">UBA</option>
+              <option value="Union Bank">Union Bank</option>
+              <option value="Unity Bank">Unity Bank</option>
+              <option value="Wema Bank">Wema Bank</option>
+              <option value="Zenith Bank">Zenith Bank</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="accountNumber">Account Number</label>
+            <input
+              type="number"
+              id="accountNumber"
+              required
+              placeholder="Enter account number"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="accountName">Account Name</label>
+            <input
+              type="text"
+              id="accountName"
+              required
+              placeholder="Enter account name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="amount">Amount (₦)</label>
+            <input
+              type="number"
+              id="amount"
+              required
+              placeholder="Enter amount"
+              min="100"
+            />
+          </div>
+
+          <button type="submit" class="proceed-btn" id="proceedBtn">
+            <i class="fas fa-paper-plane"></i> Proceed Withdrawal
+          </button>
+        </form>
+      </div>
+
+      <div class="transactions-section">
+        <h3><i class="fas fa-history"></i> Recent Withdrawals</h3>
+        <div class="transactions-list" id="transactionsList">
+          <!-- Transactions will be loaded here -->
+          <div class="no-transactions">
+            <p>No withdrawal history yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Confirm Withdrawal</h2>
+          <button class="close-modal" id="closeConfirmationModal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            You are about to withdraw <strong id="confirmAmount">₦0</strong>
+          </p>
+          <p>
+            To account:
+            <strong id="confirmAccountDetails">Account details</strong>
+          </p>
+          <p>Please confirm to proceed.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn cancel-btn" id="cancelWithdrawalBtn">
+            Cancel
+          </button>
+          <button class="modal-btn confirm-btn" id="confirmWithdrawalBtn">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Withdrawal Successful</h2>
+          <button class="close-modal" id="closeSuccessModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Your withdrawal request of
+            <strong id="successAmount">₦0</strong> has been submitted
+            successfully.
+          </p>
+          <p>
+            It will be processed within <strong>24 hours</strong>. You'll
+            receive a notification once completed.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn confirm-btn" id="closeSuccessBtn">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Firebase configuration (same as other pages)
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+        authDomain: "moniebase-b4b4d.firebaseapp.com",
+        projectId: "moniebase-b4b4d",
+        storageBucket: "moniebase-b4b4d.appspot.com",
+        messagingSenderId: "1009678808253",
+        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const walletBalanceEl = document.getElementById("walletBalance");
+      const withdrawForm = document.getElementById("withdrawForm");
+      const bankNameEl = document.getElementById("bankName");
+      const accountNumberEl = document.getElementById("accountNumber");
+      const accountNameEl = document.getElementById("accountName");
+      const amountEl = document.getElementById("amount");
+      const proceedBtn = document.getElementById("proceedBtn");
+      const transactionsList = document.getElementById("transactionsList");
+
+      // Modal elements
+      const confirmationModal = document.getElementById("confirmationModal");
+      const closeConfirmationModal = document.getElementById(
+        "closeConfirmationModal"
+      );
+      const cancelWithdrawalBtn = document.getElementById(
+        "cancelWithdrawalBtn"
+      );
+      const confirmWithdrawalBtn = document.getElementById(
+        "confirmWithdrawalBtn"
+      );
+      const confirmAmountEl = document.getElementById("confirmAmount");
+      const confirmAccountDetailsEl = document.getElementById(
+        "confirmAccountDetails"
+      );
+
+      const successModal = document.getElementById("successModal");
+      const closeSuccessModal = document.getElementById("closeSuccessModal");
+      const closeSuccessBtn = document.getElementById("closeSuccessBtn");
+      const successAmountEl = document.getElementById("successAmount");
+
+      // Variables
+      let userId = null;
+      let userBalance = 0;
+      let userEmail = "";
+      let userPhone = "";
+
+      // Load user data and transactions
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          userId = user.uid;
+          userEmail = user.email;
+
+          // Load user data
+          database
+            .ref("users/" + userId)
+            .once("value")
+            .then((snapshot) => {
+              const userData = snapshot.val();
+              if (userData) {
+                userBalance = userData.balance || 0;
+                userPhone = userData.phone || "";
+                walletBalanceEl.textContent = `₦${userBalance.toFixed(2)}`;
+
+                // Load transactions from local storage
+                loadTransactions();
+              }
+            });
+        } else {
+          // Redirect to login if not authenticated
+          window.location.href = "auth.html";
+        }
+      });
+
+      // Verify account number when bank and account number are entered
+      accountNumberEl.addEventListener("blur", verifyAccountNumber);
+      bankNameEl.addEventListener("change", verifyAccountNumber);
+
+      function verifyAccountNumber() {
+        const bankName = bankNameEl.value;
+        const accountNumber = accountNumberEl.value;
+
+        if (bankName && accountNumber && accountNumber.length >= 10) {
+          // In a real app, you would call your backend to verify the account number
+          // For this demo, we'll simulate a response after a delay
+          proceedBtn.disabled = true;
+          proceedBtn.innerHTML = '<div class="spinner"></div> Verifying...';
+
+          setTimeout(() => {
+            // Simulate account name resolution
+            // In reality, this would come from your backend or a bank API
+            const fakeAccountName = "Verified Account Holder";
+            accountNameEl.value = fakeAccountName;
+
+            proceedBtn.disabled = false;
+            proceedBtn.innerHTML =
+              '<i class="fas fa-paper-plane"></i> Proceed Withdrawal';
+          }, 1500);
+        }
+      }
+
+      // Handle form submission
+      withdrawForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const bankName = bankNameEl.value;
+        const accountNumber = accountNumberEl.value;
+        const accountName = accountNameEl.value;
+        const amount = parseFloat(amountEl.value);
+
+        // Validate amount
+        if (amount < 100) {
+          alert("Minimum withdrawal amount is ₦100");
+          return;
+        }
+
+        if (amount > userBalance) {
+          alert("Insufficient balance for this withdrawal");
+          return;
+        }
+
+        // Show confirmation modal
+        confirmAmountEl.textContent = `₦${amount.toFixed(2)}`;
+        confirmAccountDetailsEl.textContent = `${accountName} - ${accountNumber} (${bankName})`;
+        confirmationModal.style.display = "flex";
+      });
+
+      // Confirm withdrawal
+      confirmWithdrawalBtn.addEventListener("click", function () {
+        const bankName = bankNameEl.value;
+        const accountNumber = accountNumberEl.value;
+        const accountName = accountNameEl.value;
+        const amount = parseFloat(amountEl.value);
+
+        // Prepare withdrawal data
+        const withdrawalData = {
+          bankName: bankName,
+          accountNumber: accountNumber,
+          accountName: accountName,
+          amount: amount,
+          status: "completed", // pending, completed, failed
+          timestamp: Date.now(),
+          userId: userId,
+          userEmail: userEmail,
+          userPhone: userPhone,
+        };
+
+        // Show loading state
+        confirmWithdrawalBtn.disabled = true;
+        confirmWithdrawalBtn.innerHTML =
+          '<div class="spinner"></div> Processing...';
+
+        // In a real app, you would send this to your backend for processing
+        // For this demo, we'll simulate a successful response after a delay
+
+        setTimeout(() => {
+          // Update user balance in Firebase
+          const newBalance = userBalance - amount;
+
+          database
+            .ref("users/" + userId)
+            .update({
+              balance: newBalance,
+            })
+            .then(() => {
+              // Save withdrawal to Firebase
+              const withdrawalRef = database.ref("withdrawals").push();
+              withdrawalData.id = withdrawalRef.key;
+              withdrawalRef.set(withdrawalData).then(() => {
+                // Save to local storage
+                saveTransaction(withdrawalData);
+
+                // Update UI
+                userBalance = newBalance;
+                walletBalanceEl.textContent = `₦${newBalance.toFixed(2)}`;
+
+                // Show success modal
+                confirmationModal.style.display = "none";
+                successAmountEl.textContent = `₦${amount.toFixed(2)}`;
+                successModal.style.display = "flex";
+
+                // Reset form
+                withdrawForm.reset();
+                accountNameEl.value = "";
+
+                // Reset button
+                confirmWithdrawalBtn.disabled = false;
+                confirmWithdrawalBtn.textContent = "Confirm";
+              });
+            })
+            .catch((error) => {
+              alert("Error processing withdrawal: " + error.message);
+              confirmWithdrawalBtn.disabled = false;
+              confirmWithdrawalBtn.textContent = "Confirm";
+            });
+        }, 2000);
+      });
+
+      // Cancel withdrawal
+      cancelWithdrawalBtn.addEventListener("click", function () {
+        confirmationModal.style.display = "none";
+      });
+
+      // Close modals
+      closeConfirmationModal.addEventListener("click", function () {
+        confirmationModal.style.display = "none";
+      });
+
+      closeSuccessModal.addEventListener("click", function () {
+        successModal.style.display = "none";
+      });
+
+      closeSuccessBtn.addEventListener("click", function () {
+        successModal.style.display = "none";
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", function (e) {
+        if (e.target === confirmationModal) {
+          confirmationModal.style.display = "none";
+        }
+        if (e.target === successModal) {
+          successModal.style.display = "none";
+        }
+      });
+
+      // Save transaction to local storage
+      function saveTransaction(transaction) {
+        let transactions = JSON.parse(
+          localStorage.getItem("withdrawals") || "[]"
+        );
+
+        // Add status if not provided (for demo purposes)
+        if (!transaction.status) {
+          transaction.status = "pending";
+        }
+
+        transactions.unshift(transaction);
+
+        // Keep only the last 20 transactions
+        if (transactions.length > 20) {
+          transactions = transactions.slice(0, 20);
+        }
+
+        localStorage.setItem("withdrawals", JSON.stringify(transactions));
+
+        // Refresh transactions list
+        loadTransactions();
+      }
+
+      // Load transactions from local storage
+      function loadTransactions() {
+        const transactions = JSON.parse(
+          localStorage.getItem("withdrawals") || "[]"
+        );
+
+        if (transactions.length === 0) {
+          transactionsList.innerHTML = `
+            <div class="no-transactions">
+              <p>No withdrawal history yet</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Filter transactions for this user only
+        const userTransactions = transactions.filter(
+          (t) => t.userId === userId
+        );
+
+        if (userTransactions.length === 0) {
+          transactionsList.innerHTML = `
+            <div class="no-transactions">
+              <p>No withdrawal history yet</p>
+            </div>
+          `;
+          return;
+        }
+
+        transactionsList.innerHTML = userTransactions
+          .map(
+            (transaction) => `
+          <div class="transaction-item">
+            <div class="transaction-details">
+              <div>
+                <strong>${transaction.bankName}</strong>
+                <span class="status-badge ${getStatusClass(
+                  transaction.status
+                )}">
+                  ${transaction.status}
+                </span>
+              </div>
+              <div class="transaction-date">
+                ${new Date(transaction.timestamp).toLocaleString()}
+              </div>
+            </div>
+            <div class="transaction-amount ${getStatusTextClass(
+              transaction.status
+            )}">
+              -₦${transaction.amount.toFixed(2)}
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Helper functions for status styling
+      function getStatusClass(status) {
+        switch (status.toLowerCase()) {
+          case "completed":
+          case "success":
+            return "status-success";
+          case "pending":
+            return "status-pending";
+          case "failed":
+            return "status-failed";
+          default:
+            return "status-pending";
+        }
+      }
+
+      function getStatusTextClass(status) {
+        switch (status.toLowerCase()) {
+          case "completed":
+          case "success":
+            return "transaction-success";
+          case "pending":
+            return "transaction-pending";
+          case "failed":
+            return "transaction-failed";
+          default:
+            return "transaction-pending";
+        }
+      }
+    </script>
+  </body>
+</html>

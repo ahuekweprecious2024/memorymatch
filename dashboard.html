@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .user-details h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      .user-details p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .wallet-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .wallet-balance h2 {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .wallet-amount {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .wallet-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .wallet-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .deposit-btn {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .withdraw-btn {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .wallet-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .game-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+      }
+
+      .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .game-title h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .game-title p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .game-timer {
+        background-color: var(--dark);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        aspect-ratio: 1/1;
+        border-radius: 10px;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .card.flipped {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+      }
+
+      .card.matched {
+        background-color: var(--success);
+        cursor: default;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+      }
+
+      .card-back {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .card-front {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+        border: 2px solid #eee;
+      }
+
+      .game-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .bet-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .bet-amount {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        width: 100px;
+        text-align: center;
+      }
+
+      .start-btn {
+        padding: 12px 25px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .start-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .start-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .how-to-play {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .how-to-play h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: var(--dark);
+      }
+
+      .how-to-play ol {
+        padding-left: 20px;
+      }
+
+      .how-to-play li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        padding: 25px;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .modal-body {
+        margin-bottom: 20px;
+      }
+
+      .modal-body p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .win-amount {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--success);
+        text-align: center;
+        margin: 15px 0;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .play-again-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .logout-btn {
+        padding: 8px 15px;
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .wallet-section {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .wallet-actions {
+          width: 100%;
+        }
+
+        .wallet-btn {
+          flex: 1;
+          justify-content: center;
+        }
+
+        .game-board {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .game-controls {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .game-board {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .wallet-actions {
+          flex-direction: column;
+        }
+      }
+
+      .notification-container {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+
+      .notification-bar {
+        background: linear-gradient(145deg, #28e070 0%, #25d366 100%);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35),
+          0 6px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        max-width: 90%;
+        width: auto;
+        border-left: 6px solid #075e54;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .notification-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0) 80%
+        );
+        z-index: 0;
+      }
+
+      .notification-icon-container {
+        width: 60px;
+        height: 60px;
+        background-color: linear-gradient(145deg, #28e070 0%, #25d366 100%);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .notification-icon {
+        font-size: 50px;
+        color: #fff;
+      }
+
+      .notification-content {
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        line-height: 1.4;
+        position: relative;
+        z-index: 2;
+      }
+
+      .notification-link {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        background-color: rgba(7, 94, 84, 0.6);
+        padding: 6px 14px;
+        border-radius: 30px;
+        margin-left: 8px;
+        transition: all 0.3s;
+        display: inline-block;
+        margin-top: 5px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .notification-link:hover {
+        background-color: rgba(7, 94, 84, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .show-notification {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .notification-bar {
+          flex-direction: column;
+          text-align: center;
+          padding: 20px 25px;
+        }
+
+        .notification-content {
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h3 id="username">Loading...</h3>
+            <p id="userEmail">user@example.com</p>
+          </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </header>
+
+      <div class="wallet-section">
+        <div class="wallet-balance">
+          <h2>Wallet Balance</h2>
+          <div class="wallet-amount" id="walletBalance">₦0.00</div>
+        </div>
+        <div class="wallet-actions">
+          <button class="wallet-btn deposit-btn" id="depositBtn">
+            <i class="fas fa-plus"></i> Deposit
+          </button>
+          <button class="wallet-btn withdraw-btn" id="withdrawBtn">
+            <i class="fas fa-minus"></i> Withdraw
+          </button>
+        </div>
+      </div>
+
+      <div class="game-section">
+        <div class="game-header">
+          <div class="game-title">
+            <h2>Memory Card Game</h2>
+            <p>Match pairs to win rewards</p>
+          </div>
+          <div class="game-timer" id="gameTimer" style="display: none">
+            <i class="fas fa-clock"></i>
+            <span id="timeLeft">15</span>s
+          </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+          <!-- Cards will be generated here by JavaScript -->
+        </div>
+
+        <div class="game-controls">
+          <div class="bet-control">
+            <label for="betAmount">Bet Amount:</label>
+            <input
+              type="number"
+              id="betAmount"
+              class="bet-amount"
+              value="100"
+              min="100"
+              step="100"
+            />
+          </div>
+          <button class="start-btn" id="startBtn">
+            <i class="fas fa-play"></i> Start Game
+          </button>
+        </div>
+      </div>
+
+      <div class="how-to-play">
+        <h2>How To Play</h2>
+        <ol>
+          <li>
+            Click "Start Game" to begin (₦100 will be deducted from your
+            balance)
+          </li>
+          <li>You have 11 seconds to find all matching pairs</li>
+          <li>Click on cards to flip them and find matching pairs</li>
+          <li>Each successful match earns you ₦200</li>
+          <li>You can increase your bet amount to win more</li>
+          <li>Make sure you have enough balance before starting a game</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="modal" id="winModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Congratulations!</h2>
+          <button class="close-modal" id="closeWinModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>You matched a pair correctly!</p>
+          <div class="win-amount" id="winAmount">+₦200</div>
+          <p>Keep playing to win more rewards!</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn play-again-btn" id="continuePlayingBtn">
+            Continue Playing
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Game Over</h2>
+          <button class="close-modal" id="closeGameOverModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="gameOverMessage">Time's up! Better luck next time.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn play-again-btn" id="playAgainBtn">
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Firebase configuration (same as auth.html)
+      const firebaseConfig = {
+        // Replace with your Firebase project configuration
+        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+        authDomain: "moniebase-b4b4d.firebaseapp.com",
+        projectId: "moniebase-b4b4d",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "1009678808253 ",
+        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const usernameEl = document.getElementById("username");
+      const userEmailEl = document.getElementById("userEmail");
+      const walletBalanceEl = document.getElementById("walletBalance");
+      const depositBtn = document.getElementById("depositBtn");
+      const withdrawBtn = document.getElementById("withdrawBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const gameBoard = document.getElementById("gameBoard");
+      const gameTimer = document.getElementById("gameTimer");
+      const timeLeftEl = document.getElementById("timeLeft");
+      const startBtn = document.getElementById("startBtn");
+      const betAmountEl = document.getElementById("betAmount");
+      const winModal = document.getElementById("winModal");
+      const closeWinModal = document.getElementById("closeWinModal");
+      const continuePlayingBtn = document.getElementById("continuePlayingBtn");
+      const winAmountEl = document.getElementById("winAmount");
+      const gameOverModal = document.getElementById("gameOverModal");
+      const closeGameOverModal = document.getElementById("closeGameOverModal");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+      const gameOverMessageEl = document.getElementById("gameOverMessage");
+
+      // Game variables
+      let cards = [];
+      let flippedCards = [];
+      let matchedPairs = 0;
+      let gameActive = false;
+      let timer;
+      let timeLeft = 10;
+      let currentBetAmount = 100;
+      let userId;
+
+      // Emoji pairs for the game
+      const emojis = [
+        "🐶",
+        "🐱",
+        "🐭",
+        "🐹",
+        "🐰",
+        "🦊",
+        "🐻",
+        "🐼",
+        "🐨",
+        "🐯",
+        "🦁",
+        "🐮",
+      ];
+
+      // Initialize the game
+      function initGame() {
+        // Clear any existing game
+        gameBoard.innerHTML = "";
+        flippedCards = [];
+        matchedPairs = 0;
+
+        // Create pairs of cards
+        const gameEmojis = [...emojis.slice(0, 6), ...emojis.slice(0, 6)];
+        cards = shuffleArray(gameEmojis);
+
+        // Create card elements
+        cards.forEach((emoji, index) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.dataset.index = index;
+          card.dataset.value = emoji;
+
+          const cardBack = document.createElement("div");
+          cardBack.className = "card-back";
+          cardBack.innerHTML = '<i class="fas fa-question"></i>';
+
+          const cardFront = document.createElement("div");
+          cardFront.className = "card-front";
+          cardFront.textContent = emoji;
+
+          card.appendChild(cardBack);
+          card.appendChild(cardFront);
+
+          card.addEventListener("click", () => flipCard(card));
+
+          gameBoard.appendChild(card);
+        });
+      }
+
+      // Shuffle array function
+      function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+      }
+
+      // Flip card function
+      function flipCard(card) {
+        if (
+          !gameActive ||
+          card.classList.contains("flipped") ||
+          card.classList.contains("matched")
+        ) {
+          return;
+        }
+
+        card.classList.add("flipped");
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+          checkForMatch();
+        }
+      }
+
+      // Check for matching cards
+      function checkForMatch() {
+        const [card1, card2] = flippedCards;
+
+        if (card1.dataset.value === card2.dataset.value) {
+          // Match found
+          card1.classList.add("matched");
+          card2.classList.add("matched");
+          flippedCards = [];
+          matchedPairs++;
+
+          // Award points
+          const winAmount = currentBetAmount * 2;
+          winAmountEl.textContent = `+₦${winAmount}`;
+          showWinModal();
+          updateBalance(winAmount);
+
+          // Check if all pairs are matched
+          if (matchedPairs === 6) {
+            endGame(true);
+          }
+        } else {
+          // No match, flip cards back after delay
+          setTimeout(() => {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            flippedCards = [];
+          }, 1000);
+        }
+      }
+
+      // Start game function
+      function startGame() {
+        const betAmount = parseInt(betAmountEl.value);
+
+        if (isNaN(betAmount) || betAmount < 100) {
+          alert("Minimum bet amount is ₦100");
+          return;
+        }
+
+        if (
+          betAmount > parseFloat(walletBalanceEl.textContent.replace("₦", ""))
+        ) {
+          alert("Insufficient balance");
+          return;
+        }
+
+        // Deduct bet amount from balance
+        updateBalance(-betAmount);
+        currentBetAmount = betAmount;
+
+        // Initialize game
+        initGame();
+        gameActive = true;
+
+        // Start timer
+        timeLeft = 10;
+        timeLeftEl.textContent = timeLeft;
+        gameTimer.style.display = "flex";
+
+        timer = setInterval(() => {
+          timeLeft--;
+          timeLeftEl.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            endGame(false);
+          }
+        }, 1000);
+
+        // Disable start button during game
+        startBtn.disabled = true;
+      }
+
+      // End game function
+      function endGame(completed) {
+        clearInterval(timer);
+        gameActive = false;
+        startBtn.disabled = false;
+
+        if (completed) {
+          gameOverMessageEl.textContent =
+            "Congratulations! You matched all pairs!";
+        } else {
+          gameOverMessageEl.textContent = "Time's up! Better luck next time.";
+        }
+
+        showGameOverModal();
+      }
+
+      // Update user balance
+      function updateBalance(amount) {
+        const currentBalance = parseFloat(
+          walletBalanceEl.textContent.replace("₦", "")
+        );
+        const newBalance = currentBalance + amount;
+        walletBalanceEl.textContent = `₦${newBalance.toFixed(2)}`;
+
+        // Update balance in database
+        if (userId) {
+          database.ref("users/" + userId).update({
+            balance: newBalance,
+          });
+        }
+      }
+
+      // Show win modal
+      function showWinModal() {
+        winModal.style.display = "flex";
+      }
+
+      // Hide win modal
+      function hideWinModal() {
+        winModal.style.display = "none";
+      }
+
+      // Show game over modal
+      function showGameOverModal() {
+        gameOverModal.style.display = "flex";
+      }
+
+      // Hide game over modal
+      function hideGameOverModal() {
+        gameOverModal.style.display = "none";
+      }
+
+      // Event listeners
+      startBtn.addEventListener("click", startGame);
+
+      depositBtn.addEventListener("click", () => {
+        window.location.href = "deposit.html";
+      });
+
+      withdrawBtn.addEventListener("click", () => {
+        window.location.href = "withdraw.html";
+      });
+
+      logoutBtn.addEventListener("click", () => {
+        auth
+          .signOut()
+          .then(() => {
+            window.location.href = "auth.html";
+          })
+          .catch((error) => {
+            console.error("Logout error:", error);
+          });
+      });
+
+      closeWinModal.addEventListener("click", hideWinModal);
+      continuePlayingBtn.addEventListener("click", hideWinModal);
+      closeGameOverModal.addEventListener("click", hideGameOverModal);
+      playAgainBtn.addEventListener("click", () => {
+        hideGameOverModal();
+        startGame();
+      });
+
+      // Check authentication state and load user data
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          userId = user.uid;
+
+          // Load user data from database
+          database
+            .ref("users/" + userId)
+            .once("value")
+            .then((snapshot) => {
+              const userData = snapshot.val();
+
+              // Update UI with user data
+              usernameEl.textContent = userData.name || "User";
+              userEmailEl.textContent = user.email;
+
+              // Initialize wallet balance (default to 0 if not set)
+              const balance = userData.balance || 0;
+              walletBalanceEl.textContent = `₦${balance.toFixed(2)}`;
+
+              // Initialize game
+              initGame();
+            })
+            .catch((error) => {
+              console.error("Error loading user data:", error);
+            });
+        } else {
+          // No user is signed in, redirect to auth page
+          window.location.href = "auth.html";
+        }
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target === winModal) {
+          hideWinModal();
+        }
+        if (event.target === gameOverModal) {
+          hideGameOverModal();
+        }
+      });
+
+      // Prevent form submission if bet amount input is part of a form
+      betAmountEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      });
+    </script>
+    <div class="notification-container" id="notificationContainer">
+      <div class="notification-bar">
+        <div class="notification-icon-container pulse">
+          <i class="fab fa-whatsapp notification-icon"></i>
+        </div>
+        <div class="notification-content">
+          Join the WhatsApp group and stay updated with recent updates
+          <a
+            href="https://chat.whatsapp.com/EqASY2zsZjn4XFF16rjSyw"
+            class="notification-link"
+            target="_blank"
+            >Join now</a
+          >
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const notificationContainer = document.getElementById(
+          "notificationContainer"
+        );
+
+        // Show notification after a short delay
+        setTimeout(function () {
+          notificationContainer.classList.add("show-notification");
+        }, 500);
+
+        // Hide notification after 4 seconds
+        setTimeout(function () {
+          notificationContainer.classList.remove("show-notification");
+        }, 4500); // 4000ms (4 seconds) + 500ms initial delay
+      });
+    </script>
+  </body>
+</html>

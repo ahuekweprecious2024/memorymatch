@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game - Login/Signup</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Styles remain unchanged */
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #4361ee, #3f37c9);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 850px;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease;
+        display: flex;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        padding: 25px;
+        text-align: center;
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .form-container {
+        padding: 30px;
+        width: 60%;
+      }
+
+      .forms-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .form-section {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+      }
+
+      .form-section:last-child {
+        border-bottom: none;
+      }
+
+      .form-section h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: var(--dark);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--secondary);
+      }
+
+      .error-message {
+        color: var(--danger);
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .success-message {
+        color: var(--success);
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .password-container {
+        position: relative;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #777;
+      }
+
+      .logo {
+        font-size: 40px;
+        margin-bottom: 15px;
+        color: white;
+      }
+
+      .debug-info {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #666;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          max-width: 450px;
+        }
+
+        .header {
+          width: 100%;
+          padding: 20px;
+        }
+
+        .form-container {
+          width: 100%;
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h1>Memory Game</h1>
+        <p>Test your memory and win rewards!</p>
+      </div>
+
+      <div class="form-container">
+        <div class="forms-wrapper">
+          <!-- Login Form -->
+          <div class="form-section">
+            <h2>Login</h2>
+            <form id="loginForm">
+              <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input
+                  type="email"
+                  id="loginEmail"
+                  required
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <div class="password-container">
+                  <input
+                    type="password"
+                    id="loginPassword"
+                    required
+                    placeholder="Enter your password"
+                  />
+                  <i
+                    class="fas fa-eye password-toggle"
+                    onclick="togglePassword('loginPassword', this)"
+                  ></i>
+                </div>
+              </div>
+              <p class="error-message" id="loginError"></p>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px"></i>
+                Login
+              </button>
+            </form>
+          </div>
+
+          <!-- Signup Form -->
+          <div class="form-section">
+            <h2>Create Account</h2>
+            <form id="signupForm">
+              <div class="form-group">
+                <label for="signupName">Full Name</label>
+                <input
+                  type="text"
+                  id="signupName"
+                  required
+                  placeholder="Enter your full name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="signupPhone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="signupPhone"
+                  required
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input
+                  type="email"
+                  id="signupEmail"
+                  required
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <div class="password-container">
+                  <input
+                    type="password"
+                    id="signupPassword"
+                    required
+                    placeholder="Create a password"
+                    minlength="6"
+                  />
+                  <i
+                    class="fas fa-eye password-toggle"
+                    onclick="togglePassword('signupPassword', this)"
+                  ></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="signupConfirmPassword">Confirm Password</label>
+                <div class="password-container">
+                  <input
+                    type="password"
+                    id="signupConfirmPassword"
+                    required
+                    placeholder="Confirm your password"
+                    minlength="6"
+                  />
+                  <i
+                    class="fas fa-eye password-toggle"
+                    onclick="togglePassword('signupConfirmPassword', this)"
+                  ></i>
+                </div>
+              </div>
+              <p class="error-message" id="signupError"></p>
+              <p class="success-message" id="signupSuccess"></p>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus" style="margin-right: 8px"></i> Sign
+                Up
+              </button>
+            </form>
+            <div class="debug-info" id="debugInfo"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Debug helper function
+      function showDebugInfo(msg) {
+        const debugInfo = document.getElementById("debugInfo");
+        debugInfo.style.display = "block";
+        debugInfo.innerHTML += msg + "<br>";
+        console.log(msg);
+      }
+
+      // Firebase configuration - ensure these values are correct
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+        authDomain: "moniebase-b4b4d.firebaseapp.com",
+        projectId: "moniebase-b4b4d",
+        storageBucket: "moniebase-b4b4d.appspot.com",
+        messagingSenderId: "1009678808253",
+        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      try {
+        firebase.initializeApp(firebaseConfig);
+        showDebugInfo("initialized successfully");
+      } catch (error) {
+        showDebugInfo("initialization error: " + error.message);
+      }
+
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      const loginError = document.getElementById("loginError");
+      const signupError = document.getElementById("signupError");
+      const signupSuccess = document.getElementById("signupSuccess");
+
+      // Toggle password visibility
+      function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      }
+
+      // Test database connection
+      function testDatabaseConnection() {
+        const testRef = database.ref(".info/connected");
+        testRef.on("value", (snap) => {
+          if (snap.val() === true) {
+            showDebugInfo("Connected");
+          } else {
+            showDebugInfo("Not connected");
+          }
+        });
+      }
+
+      // Run connection test
+      testDatabaseConnection();
+
+      // Login form submission
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        // Clear previous error messages
+        loginError.style.display = "none";
+
+        // Display loading state
+        const loginButton = loginForm.querySelector("button");
+        const originalButtonText = loginButton.innerHTML;
+        loginButton.disabled = true;
+        loginButton.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // Signed in successfully
+            showDebugInfo(
+              "Login successful for user: " + userCredential.user.uid
+            );
+            window.location.href = "dashboard.html";
+          })
+          .catch((error) => {
+            loginError.textContent = error.message;
+            loginError.style.display = "block";
+            showDebugInfo("Login error: " + error.message);
+
+            // Reset button state
+            loginButton.disabled = false;
+            loginButton.innerHTML = originalButtonText;
+          });
+      });
+
+      // Signup form submission
+      signupForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const name = document.getElementById("signupName").value;
+        const phone = document.getElementById("signupPhone").value;
+        const email = document.getElementById("signupEmail").value;
+        const password = document.getElementById("signupPassword").value;
+        const confirmPassword = document.getElementById(
+          "signupConfirmPassword"
+        ).value;
+
+        // Clear previous messages
+        signupError.style.display = "none";
+        signupSuccess.style.display = "none";
+
+        // Display loading state
+        const signupButton = signupForm.querySelector("button");
+        const originalButtonText = signupButton.innerHTML;
+        signupButton.disabled = true;
+        signupButton.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          signupError.textContent = "Passwords don't match!";
+          signupError.style.display = "block";
+          signupButton.disabled = false;
+          signupButton.innerHTML = originalButtonText;
+          return;
+        }
+
+        // Validate password length
+        if (password.length < 6) {
+          signupError.textContent = "Password must be at least 6 characters";
+          signupError.style.display = "block";
+          signupButton.disabled = false;
+          signupButton.innerHTML = originalButtonText;
+          return;
+        }
+
+        showDebugInfo("Creating user account...");
+
+        // Create user with email and password
+        auth
+          .createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // User created successfully
+            const user = userCredential.user;
+            showDebugInfo("User created with UID: " + user.uid);
+
+            // Show success message
+            signupSuccess.textContent = "Account created! Saving your data...";
+            signupSuccess.style.display = "block";
+
+            // Prepare user data object
+            const userData = {
+              name: name,
+              phone: phone,
+              email: email,
+              balance: 1000.0, // Starting balance
+              createdAt: Date.now(), // Use JavaScript timestamp instead of ServerValue
+            };
+
+            showDebugInfo("Saving user data to database...");
+
+            // Directly use the database reference
+            return database.ref("/users/" + user.uid).set(userData);
+          })
+          .then(() => {
+            // Data saved successfully
+            showDebugInfo("User data saved successfully!");
+            signupSuccess.textContent =
+              "Account created successfully! Redirecting to dashboard...";
+
+            // Test if the data was saved by trying to read it back
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+              database
+                .ref("/users/" + currentUser.uid)
+                .once("value")
+                .then((snapshot) => {
+                  const userData = snapshot.val();
+                  if (userData) {
+                    showDebugInfo(
+                      "Verified data in database: " + JSON.stringify(userData)
+                    );
+                  } else {
+                    showDebugInfo(
+                      "WARNING: Data not found in database after saving!"
+                    );
+                  }
+                })
+                .catch((error) => {
+                  showDebugInfo("Error verifying data: " + error.message);
+                });
+            }
+
+            // Wait before redirecting
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 3000); // Longer delay to see debug messages
+          })
+          .catch((error) => {
+            signupError.textContent = error.message;
+            signupError.style.display = "block";
+            showDebugInfo("Error during account creation: " + error.message);
+
+            // Reset button state
+            signupButton.disabled = false;
+            signupButton.innerHTML = originalButtonText;
+          });
+      });
+
+      // Check if user is already logged in
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          showDebugInfo("User already logged in: " + user.uid);
+
+          // Check if user data exists in database
+          database
+            .ref("/users/" + user.uid)
+            .once("value")
+            .then((snapshot) => {
+              const userData = snapshot.val();
+              if (userData) {
+                showDebugInfo("User data found in database");
+                window.location.href = "dashboard.html";
+              } else {
+                showDebugInfo(
+                  "User is authenticated but no data found in database"
+                );
+                auth.signOut();
+              }
+            })
+            .catch((error) => {
+              showDebugInfo("Error checking user data: " + error.message);
+            });
+        } else {
+          showDebugInfo("No user currently logged in");
+        }
+      });
+    </script>
+  </body>
+</html>
