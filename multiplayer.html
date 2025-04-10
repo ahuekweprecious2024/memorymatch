@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game - Multiplayer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .user-details h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      .user-details p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .lobby-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+      }
+
+      .lobby-header h2 {
+        font-size: 22px;
+        margin-bottom: 5px;
+        color: var(--dark);
+      }
+
+      .lobby-header p {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .lobby-actions {
+        margin-bottom: 20px;
+      }
+
+      .room-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .room-controls input {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .join-btn {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .create-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .room-status {
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .players-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .player-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid transparent;
+      }
+
+      .player-card.you {
+        border-color: var(--primary);
+      }
+
+      .player-card .player-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--accent);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+      }
+
+      .player-card .player-details {
+        flex: 1;
+      }
+
+      .player-card .player-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      .player-card .player-status {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .game-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+      }
+
+      .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .game-title h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .game-title p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .game-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .game-timer {
+        background-color: var(--dark);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .current-turn {
+        padding: 8px 15px;
+        border-radius: 20px;
+        background-color: var(--accent);
+        color: white;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .current-turn.your-turn {
+        background-color: var(--success);
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        aspect-ratio: 1/1;
+        border-radius: 10px;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .card.flipped {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+      }
+
+      .card.matched {
+        background-color: var(--success);
+        cursor: default;
+      }
+
+      .card.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+      }
+
+      .card-back {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .card-front {
+        background-color: white;
+        color: var(--dark);
+        transform: rotateY(180deg);
+        border: 2px solid #eee;
+      }
+
+      .game-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .scoreboard {
+        display: flex;
+        gap: 20px;
+      }
+
+      .player-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+      }
+
+      .player-score .player-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .player-score .score {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .start-btn {
+        padding: 12px 25px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .start-btn:hover {
+        background-color: var(--secondary);
+      }
+
+      .start-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        padding: 25px;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        font-size: 22px;
+        color: var(--dark);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .modal-body {
+        margin-bottom: 20px;
+      }
+
+      .modal-body p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .loading-spinner {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
+        color: var(--primary);
+      }
+
+      .final-scores {
+        margin: 20px 0;
+      }
+
+      .final-score {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      .final-score .player-name {
+        font-weight: 600;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .modal-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .play-again-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .lobby-btn {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .cancel-btn {
+        background-color: var(--danger);
+        color: white;
+      }
+
+      .logout-btn {
+        padding: 8px 15px;
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .game-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .game-controls {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .scoreboard {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .game-board {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .room-controls input {
+          min-width: 100%;
+        }
+
+        .btn {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h3 id="username">Loading...</h3>
+            <p id="userEmail">user@example.com</p>
+          </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </header>
+
+      <div class="lobby-section">
+        <div class="lobby-header">
+          <h2>Multiplayer Lobby</h2>
+          <p>Create or join a room to play with friends</p>
+        </div>
+
+        <div class="lobby-actions">
+          <div class="room-controls">
+            <input type="text" id="roomCode" placeholder="Enter room code" />
+            <button class="btn join-btn" id="joinRoomBtn">
+              <i class="fas fa-door-open"></i> Join Room
+            </button>
+            <button class="btn create-btn" id="createRoomBtn">
+              <i class="fas fa-plus"></i> Create Room
+            </button>
+          </div>
+          <div class="room-status" id="roomStatus">
+            Not connected to any room
+          </div>
+        </div>
+
+        <div class="players-list" id="playersList">
+          <!-- Players will be listed here -->
+        </div>
+      </div>
+
+      <div class="game-section" id="gameSection" style="display: none">
+        <div class="game-header">
+          <div class="game-title">
+            <h2>Multiplayer Memory Game</h2>
+            <p>Match pairs faster than your opponent!</p>
+          </div>
+          <div class="game-info">
+            <div class="game-timer" id="gameTimer">
+              <i class="fas fa-clock"></i>
+              <span id="timeLeft">30</span>s
+            </div>
+            <div class="current-turn" id="currentTurn">
+              Waiting for game to start...
+            </div>
+          </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+          <!-- Cards will be generated here by JavaScript -->
+        </div>
+
+        <div class="game-controls">
+          <div class="scoreboard">
+            <div class="player-score" id="player1Score">
+              <span class="player-name">You</span>
+              <span class="score">0 matches</span>
+            </div>
+            <div class="player-score" id="player2Score">
+              <span class="player-name">Opponent</span>
+              <span class="score">0 matches</span>
+            </div>
+          </div>
+          <button class="start-btn" id="startGameBtn" disabled>
+            <i class="fas fa-play"></i> Start Game
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waiting Modal -->
+    <div class="modal" id="waitingModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Waiting for Players</h2>
+        </div>
+        <div class="modal-body">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <p id="waitingMessage">Waiting for another player to join...</p>
+          <p>Room Code: <strong id="displayRoomCode"></strong></p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn cancel-btn" id="cancelWaitingBtn">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="gameOverTitle">Game Over</h2>
+          <button class="close-modal" id="closeGameOverModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="gameOverMessage"></p>
+          <div class="final-scores">
+            <div class="final-score" id="finalPlayer1Score">
+              <span class="player-name">You</span>
+              <span class="score">0 matches</span>
+            </div>
+            <div class="final-score" id="finalPlayer2Score">
+              <span class="player-name">Opponent</span>
+              <span class="score">0 matches</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn play-again-btn" id="playAgainBtn">
+            Play Again
+          </button>
+          <button class="modal-btn lobby-btn" id="returnToLobbyBtn">
+            Return to Lobby
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+              // Firebase configuration (same as auth.html)
+      const firebaseConfig = {
+          apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+          authDomain: "moniebase-b4b4d.firebaseapp.com",
+          projectId: "moniebase-b4b4d",
+          storageBucket: "moniebase-b4b4d.appspot.com",
+          messagingSenderId: "1009678808253",
+          appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+          databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const usernameEl = document.getElementById("username");
+      const userEmailEl = document.getElementById("userEmail");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const roomCodeInput = document.getElementById("roomCode");
+      const joinRoomBtn = document.getElementById("joinRoomBtn");
+      const createRoomBtn = document.getElementById("createRoomBtn");
+      const roomStatusEl = document.getElementById("roomStatus");
+      const playersListEl = document.getElementById("playersList");
+      const gameSectionEl = document.getElementById("gameSection");
+      const gameBoardEl = document.getElementById("gameBoard");
+      const gameTimerEl = document.getElementById("gameTimer");
+      const timeLeftEl = document.getElementById("timeLeft");
+      const currentTurnEl = document.getElementById("currentTurn");
+      const player1ScoreEl = document.getElementById("player1Score");
+      const player2ScoreEl = document.getElementById("player2Score");
+      const startGameBtn = document.getElementById("startGameBtn");
+      const waitingModal = document.getElementById("waitingModal");
+      const waitingMessageEl = document.getElementById("waitingMessage");
+      const displayRoomCodeEl = document.getElementById("displayRoomCode");
+      const cancelWaitingBtn = document.getElementById("cancelWaitingBtn");
+      const gameOverModal = document.getElementById("gameOverModal");
+      const gameOverTitleEl = document.getElementById("gameOverTitle");
+      const gameOverMessageEl = document.getElementById("gameOverMessage");
+      const finalPlayer1ScoreEl = document.getElementById("finalPlayer1Score");
+      const finalPlayer2ScoreEl = document.getElementById("finalPlayer2Score");
+      const closeGameOverModal = document.getElementById("closeGameOverModal");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+      const returnToLobbyBtn = document.getElementById("returnToLobbyBtn");
+
+      // Game variables
+      let cards = [];
+      let flippedCards = [];
+      let matchedPairs = 0;
+      let gameActive = false;
+      let timer;
+      let timeLeft = 30;
+      let currentRoomId = null;
+      let currentPlayerId = null;
+      let currentPlayerName = "Player";
+      let opponentId = null;
+      let opponentName = "Opponent";
+      let player1Matches = 0;
+      let player2Matches = 0;
+      let currentTurnPlayerId = null;
+      let isHost = false;
+      let roomRef = null;
+      let gameRef = null;
+      let playersRef = null;
+
+      // Emoji pairs for the game
+      const emojis = [
+          "🐶", "🐱", "🐭", "🐹", "🐰", "🦊",
+          "🐻", "🐼", "🐨", "🐯", "🦁", "🐮"
+      ];
+
+      // Initialize the game
+      function initGame() {
+          // Clear any existing game
+          gameBoardEl.innerHTML = "";
+          flippedCards = [];
+          matchedPairs = 0;
+          player1Matches = 0;
+          player2Matches = 0;
+          updateScores();
+
+          // Create pairs of cards
+          const gameEmojis = [...emojis.slice(0, 6), ...emojis.slice(0, 6)];
+          cards = shuffleArray(gameEmojis);
+
+          // Create card elements
+          cards.forEach((emoji, index) => {
+              const card = document.createElement("div");
+              card.className = "card";
+              card.dataset.index = index;
+              card.dataset.value = emoji;
+
+              const cardBack = document.createElement("div");
+              cardBack.className = "card-back";
+              cardBack.innerHTML = '<i class="fas fa-question"></i>';
+
+              const cardFront = document.createElement("div");
+              cardFront.className = "card-front";
+              cardFront.textContent = emoji;
+
+              card.appendChild(cardBack);
+              card.appendChild(cardFront);
+
+              card.addEventListener("click", () => flipCard(card));
+
+              gameBoardEl.appendChild(card);
+          });
+      }
+
+      // Shuffle array function
+      function shuffleArray(array) {
+          const newArray = [...array];
+          for (let i = newArray.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+          }
+          return newArray;
+      }
+
+      // Flip card function
+      function flipCard(card) {
+          if (!gameActive ||
+              card.classList.contains("flipped") ||
+              card.classList.contains("matched") ||
+              card.classList.contains("disabled") ||
+              currentTurnPlayerId !== currentPlayerId) {
+              return;
+          }
+
+          card.classList.add("flipped");
+          flippedCards.push(card);
+
+          // Broadcast the card flip to other players
+          if (gameRef) {
+              gameRef.child("moves").push({
+                  playerId: currentPlayerId,
+                  cardIndex: card.dataset.index,
+                  timestamp: Date.now()
+              });
+          }
+
+          if (flippedCards.length === 2) {
+              checkForMatch();
+          }
+      }
+
+      // Check for matching cards
+      function checkForMatch() {
+          const [card1, card2] = flippedCards;
+
+          if (card1.dataset.value === card2.dataset.value) {
+              // Match found
+              card1.classList.add("matched");
+              card2.classList.add("matched");
+              flippedCards = [];
+              matchedPairs++;
+
+              // Update score for current player
+              if (currentPlayerId) {
+                  if (currentPlayerId === player1ScoreEl.dataset.playerId) {
+                      player1Matches++;
+                  } else {
+                      player2Matches++;
+                  }
+                  updateScores();
+              }
+
+              // Check if all pairs are matched
+              if (matchedPairs === 6) {
+                  endGame(true);
+              }
+          } else {
+              // No match, flip cards back after delay and switch turn
+              setTimeout(() => {
+                  card1.classList.remove("flipped");
+                  card2.classList.remove("flipped");
+                  flippedCards = [];
+                  switchTurn();
+              }, 1000);
+          }
+      }
+
+      // Switch turn to the other player
+      function switchTurn() {
+          if (!currentRoomId || !gameActive) return;
+
+          const newTurnPlayerId = currentTurnPlayerId === player1ScoreEl.dataset.playerId ?
+                                player2ScoreEl.dataset.playerId : player1ScoreEl.dataset.playerId;
+
+          if (gameRef) {
+              gameRef.update({
+                  currentTurn: newTurnPlayerId,
+                  lastTurnSwitch: Date.now()
+              });
+          }
+      }
+
+      // Update the scores display
+      function updateScores() {
+          if (player1ScoreEl.dataset.playerId === currentPlayerId) {
+              player1ScoreEl.querySelector(".score").textContent = `${player1Matches} matches`;
+              player2ScoreEl.querySelector(".score").textContent = `${player2Matches} matches`;
+
+              finalPlayer1ScoreEl.querySelector(".score").textContent = `${player1Matches} matches`;
+              finalPlayer2ScoreEl.querySelector(".score").textContent = `${player2Matches} matches`;
+          } else {
+              player1ScoreEl.querySelector(".score").textContent = `${player2Matches} matches`;
+              player2ScoreEl.querySelector(".score").textContent = `${player1Matches} matches`;
+
+              finalPlayer1ScoreEl.querySelector(".score").textContent = `${player2Matches} matches`;
+              finalPlayer2ScoreEl.querySelector(".score").textContent = `${player1Matches} matches`;
+          }
+      }
+
+      // Start game function
+      function startGame() {
+          if (!currentRoomId || !isHost) return;
+
+          initGame();
+          gameActive = true;
+          timeLeft = 30;
+          timeLeftEl.textContent = timeLeft;
+
+          // Set initial turn to player 1
+          const player1Id = player1ScoreEl.dataset.playerId;
+
+          if (gameRef) {
+              gameRef.update({
+                  gameActive: true,
+                  currentTurn: player1Id,
+                  lastTurnSwitch: Date.now(),
+                  player1Matches: 0,
+                  player2Matches: 0,
+                  matchedPairs: 0,
+                  timeLeft: timeLeft
+              });
+
+              // Start timer
+              timer = setInterval(() => {
+                  timeLeft--;
+                  gameRef.update({
+                      timeLeft: timeLeft
+                  });
+
+                  if (timeLeft <= 0) {
+                      endGame(false);
+                  }
+              }, 1000);
+          }
+      }
+
+      // End game function
+      function endGame(completed) {
+          clearInterval(timer);
+          gameActive = false;
+
+          if (gameRef) {
+              gameRef.update({
+                  gameActive: false
+              });
+          }
+
+          if (completed) {
+              gameOverTitleEl.textContent = "Game Completed!";
+              gameOverMessageEl.textContent = "All pairs have been matched!";
+          } else {
+              gameOverTitleEl.textContent = "Time's Up!";
+              gameOverMessageEl.textContent = "The game has ended.";
+          }
+
+          showGameOverModal();
+      }
+
+      // Show waiting modal
+      function showWaitingModal() {
+          waitingModal.style.display = "flex";
+      }
+
+      // Hide waiting modal
+      function hideWaitingModal() {
+          waitingModal.style.display = "none";
+      }
+
+      // Show game over modal
+      function showGameOverModal() {
+          gameOverModal.style.display = "flex";
+      }
+
+      // Hide game over modal
+      function hideGameOverModal() {
+          gameOverModal.style.display = "none";
+      }
+
+      // Generate a random room code
+      function generateRoomCode() {
+          const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+          let result = '';
+          for (let i = 0; i < 4; i++) {
+              result += characters.charAt(Math.floor(Math.random() * characters.length));
+          }
+          return result;
+      }
+
+      // Create a new game room
+      function createRoom() {
+          const roomCode = generateRoomCode();
+          currentRoomId = roomCode;
+          isHost = true;
+
+          roomRef = database.ref("multiplayerRooms/" + roomCode);
+          gameRef = roomRef.child("game");
+          playersRef = roomRef.child("players");
+
+          // Create the room with initial data
+          roomRef.set({
+              createdAt: Date.now(),
+              host: currentPlayerId,
+              status: "waiting"
+          });
+
+          // Add current player to the room
+          playersRef.child(currentPlayerId).set({
+              name: currentPlayerName,
+              joinedAt: Date.now(),
+              status: "ready"
+          });
+
+          // Initialize game data
+          gameRef.set({
+              gameActive: false,
+              currentTurn: null,
+              player1: null,
+              player2: null,
+              player1Matches: 0,
+              player2Matches: 0,
+              matchedPairs: 0,
+              timeLeft: timeLeft
+          });
+
+          // Update UI
+          roomStatusEl.textContent = `Room created: ${roomCode}`;
+          displayRoomCodeEl.textContent = roomCode;
+          waitingMessageEl.textContent = "Waiting for another player to join...";
+          showWaitingModal();
+
+          // Listen for players joining
+          playersRef.on("child_added", (snapshot) => {
+              updatePlayersList();
+
+              // Check if we have 2 players
+              playersRef.once("value").then((playersSnapshot) => {
+                  const players = playersSnapshot.val();
+                  const playerIds = Object.keys(players || {});
+
+                  if (playerIds.length === 2) {
+                      // Start the game setup
+                      setupGame();
+                  }
+              });
+          });
+      }
+
+      // Join an existing room
+      function joinRoom() {
+          const roomCode = roomCodeInput.value.trim().toUpperCase();
+
+          if (!roomCode || roomCode.length !== 4) {
+              alert("Please enter a valid 4-character room code");
+              return;
+          }
+
+          currentRoomId = roomCode;
+          isHost = false;
+
+          roomRef = database.ref("multiplayerRooms/" + roomCode);
+          gameRef = roomRef.child("game");
+          playersRef = roomRef.child("players");
+
+          // Check if room exists
+          roomRef.once("value").then((snapshot) => {
+              if (!snapshot.exists()) {
+                  alert("Room not found. Please check the code and try again.");
+                  currentRoomId = null;
+                  return;
+              }
+
+              const roomData = snapshot.val();
+
+              if (roomData.status !== "waiting") {
+                  alert("This room is not accepting new players.");
+                  currentRoomId = null;
+                  return;
+              }
+
+              // Check if room already has 2 players
+              return playersRef.once("value");
+          }).then((playersSnapshot) => {
+              if (!playersSnapshot) return;
+
+              const players = playersSnapshot.val() || {};
+
+              if (Object.keys(players).length >= 2) {
+                  alert("This room is already full.");
+                  currentRoomId = null;
+                  return;
+              }
+
+              // Add current player to the room
+              return playersRef.child(currentPlayerId).set({
+                  name: currentPlayerName,
+                  joinedAt: Date.now(),
+                  status: "ready"
+              });
+          }).then(() => {
+              if (!currentRoomId) return;
+
+              // Update UI
+              roomStatusEl.textContent = `Joined room: ${roomCode}`;
+              displayRoomCodeEl.textContent = roomCode;
+              waitingMessageEl.textContent = "Waiting for host to start the game...";
+              showWaitingModal();
+
+              // Listen for game setup
+              gameRef.on("value", (gameSnapshot) => {
+                  const gameData = gameSnapshot.val() || {};
+
+                  if (gameData.gameActive) {
+                      hideWaitingModal();
+                      setupGame();
+                  }
+              });
+          }).catch((error) => {
+              console.error("Error joining room:", error);
+              alert("Error joining room. Please try again.");
+              currentRoomId = null;
+          });
+      }
+
+      // Setup the game with players
+      function setupGame() {
+          if (!currentRoomId) return;
+
+          // Get all players in the room
+          playersRef.once("value").then((playersSnapshot) => {
+              const players = playersSnapshot.val();
+              const playerIds = Object.keys(players);
+
+              if (playerIds.length !== 2) {
+                  console.error("Expected 2 players, found", playerIds.length);
+                  return;
+              }
+
+              // Set player IDs in the game
+              const updates = {
+                  player1: playerIds[0],
+                  player2: playerIds[1],
+                  currentTurn: playerIds[0] // First player starts
+              };
+
+              return gameRef.update(updates);
+          }).then(() => {
+              // Show game section
+              gameSectionEl.style.display = "block";
+
+              // Initialize game board
+              initGame();
+
+              // Set up player scores
+              gameRef.once("value").then((gameSnapshot) => {
+                  const gameData = gameSnapshot.val();
+
+                  player1ScoreEl.dataset.playerId = gameData.player1;
+                  player2ScoreEl.dataset.playerId = gameData.player2;
+
+                  // Get player names
+                  return playersRef.once("value");
+              }).then((playersSnapshot) => {
+                  const players = playersSnapshot.val();
+
+                  if (player1ScoreEl.dataset.playerId === currentPlayerId) {
+                      player1ScoreEl.querySelector(".player-name").textContent = "You";
+                      player2ScoreEl.querySelector(".player-name").textContent = players[player2ScoreEl.dataset.playerId]?.name || "Opponent";
+
+                      finalPlayer1ScoreEl.querySelector(".player-name").textContent = "You";
+                      finalPlayer2ScoreEl.querySelector(".player-name").textContent = players[player2ScoreEl.dataset.playerId]?.name || "Opponent";
+                  } else {
+                      player1ScoreEl.querySelector(".player-name").textContent = players[player1ScoreEl.dataset.playerId]?.name || "Opponent";
+                      player2ScoreEl.querySelector(".player-name").textContent = "You";
+
+                      finalPlayer1ScoreEl.querySelector(".player-name").textContent = players[player1ScoreEl.dataset.playerId]?.name || "Opponent";
+                      finalPlayer2ScoreEl.querySelector(".player-name").textContent = "You";
+                  }
+
+                  // Enable start button for host
+                  if (isHost) {
+                      startGameBtn.disabled = false;
+                  }
+              });
+
+              // Listen for game state changes
+              gameRef.on("value", (gameSnapshot) => {
+                  const gameData = gameSnapshot.val() || {};
+
+                  // Update timer
+                  if (gameData.timeLeft !== undefined) {
+                      timeLeft = gameData.timeLeft;
+                      timeLeftEl.textContent = timeLeft;
+                  }
+
+                  // Update current turn
+                  if (gameData.currentTurn) {
+                      currentTurnPlayerId = gameData.currentTurn;
+
+                      if (currentTurnPlayerId === currentPlayerId) {
+                          currentTurnEl.textContent = "Your turn!";
+                          currentTurnEl.classList.add("your-turn");
+                      } else {
+                          currentTurnEl.textContent = "Opponent's turn";
+                          currentTurnEl.classList.remove("your-turn");
+                      }
+                  }
+
+                  // Update scores
+                  if (gameData.player1Matches !== undefined && gameData.player2Matches !== undefined) {
+                      player1Matches = gameData.player1Matches;
+                      player2Matches = gameData.player2Matches;
+                      updateScores();
+                  }
+
+                  // Update game active state
+                  if (gameData.gameActive !== undefined) {
+                      gameActive = gameData.gameActive;
+                  }
+
+                  // Update matched pairs
+                  if (gameData.matchedPairs !== undefined) {
+                      matchedPairs = gameData.matchedPairs;
+                  }
+              });
+
+              // Listen for moves from other players
+              gameRef.child("moves").on("child_added", (moveSnapshot) => {
+                  const move = moveSnapshot.val();
+
+                  // Ignore our own moves
+                  if (move.playerId === currentPlayerId) return;
+
+                  // Process the move
+                  const cardIndex = move.cardIndex;
+                  const cards = gameBoardEl.querySelectorAll(".card");
+
+                  if (cardIndex >= 0 && cardIndex < cards.length) {
+                      const card = cards[cardIndex];
+                      flipCard(card);
+                  }
+              });
+          });
+      }
+
+      // Update the players list in the lobby
+      function updatePlayersList() {
+          if (!playersRef) return;
+
+          playersRef.once("value").then((snapshot) => {
+              const players = snapshot.val() || {};
+              playersListEl.innerHTML = "";
+
+              Object.entries(players).forEach(([playerId, playerData]) => {
+                  const playerCard = document.createElement("div");
+                  playerCard.className = "player-card";
+                  if (playerId === currentPlayerId) {
+                    playerCard.classList.add("you");
+                  }
+
+                  const playerAvatar = document.createElement("div");
+                  playerAvatar.className = "player-avatar";
+                  playerAvatar.innerHTML = '<i class="fas fa-user"></i>';
+
+                  const playerDetails = document.createElement("div");
+                  playerDetails.className = "player-details";
+
+                  const playerName = document.createElement("div");
+                  playerName.className = "player-name";
+                  playerName.textContent = playerData.name;
+
+                  const playerStatus = document.createElement("div");
+                  playerStatus.className = "player-status";
+                  playerStatus.textContent = playerData.status;
+
+                  playerDetails.appendChild(playerName);
+                  playerDetails.appendChild(playerStatus);
+                  playerCard.appendChild(playerAvatar);
+                  playerCard.appendChild(playerDetails);
+                  playersListEl.appendChild(playerCard);
+              });
+          });
+      }
+
+      // Leave the current room
+      function leaveRoom() {
+          if (!currentRoomId) return;
+
+          // Remove player from room
+          if (playersRef && currentPlayerId) {
+              playersRef.child(currentPlayerId).remove();
+          }
+
+          // If host leaves, remove the entire room
+          if (isHost && roomRef) {
+              roomRef.remove();
+          }
+
+          // Reset game state
+          resetGameState();
+      }
+
+      // Reset all game state variables
+      function resetGameState() {
+          clearInterval(timer);
+          gameActive = false;
+          currentRoomId = null;
+          currentTurnPlayerId = null;
+          isHost = false;
+          roomRef = null;
+          gameRef = null;
+          playersRef = null;
+
+          // Update UI
+          roomStatusEl.textContent = "Not connected to any room";
+          gameSectionEl.style.display = "none";
+          hideWaitingModal();
+          hideGameOverModal();
+          playersListEl.innerHTML = "";
+      }
+
+      // Event listeners
+      joinRoomBtn.addEventListener("click", joinRoom);
+      createRoomBtn.addEventListener("click", createRoom);
+      cancelWaitingBtn.addEventListener("click", leaveRoom);
+      startGameBtn.addEventListener("click", startGame);
+      playAgainBtn.addEventListener("click", () => {
+          hideGameOverModal();
+          if (isHost) {
+              startGame();
+          }
+      });
+      returnToLobbyBtn.addEventListener("click", () => {
+          hideGameOverModal();
+          leaveRoom();
+      });
+      closeGameOverModal.addEventListener("click", hideGameOverModal);
+
+      logoutBtn.addEventListener("click", () => {
+          auth.signOut().then(() => {
+              window.location.href = "auth.html";
+          }).catch((error) => {
+              console.error("Logout error:", error);
+          });
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", (event) => {
+          if (event.target === waitingModal) {
+              hideWaitingModal();
+          }
+          if (event.target === gameOverModal) {
+              hideGameOverModal();
+          }
+      });
+
+      // Check authentication state and load user data
+      auth.onAuthStateChanged((user) => {
+          if (user) {
+              // User is signed in
+              currentPlayerId = user.uid;
+              currentPlayerName = user.displayName || "Player";
+
+              // Load user data from database
+              database.ref("users/" + currentPlayerId).once("value").then((snapshot) => {
+                  const userData = snapshot.val();
+
+                  // Update UI with user data
+                  usernameEl.textContent = userData?.name || "User";
+                  userEmailEl.textContent = user.email;
+              }).catch((error) => {
+                  console.error("Error loading user data:", error);
+              });
+          } else {
+              // No user is signed in, redirect to auth page
+              window.location.href = "auth.html";
+          }
+      });
+
+      // Clean up when page is unloaded
+      window.addEventListener("beforeunload", () => {
+          if (currentRoomId) {
+              leaveRoom();
+          }
+      });
+    </script>
+  </body>
+</html>
+    </script>
+  </body>
+</html>
