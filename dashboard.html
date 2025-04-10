@@ -606,7 +606,7 @@
           </div>
           <div class="game-timer" id="gameTimer" style="display: none">
             <i class="fas fa-clock"></i>
-            <span id="timeLeft">15</span>s
+            <span id="timeLeft">5</span>s
           </div>
         </div>
 
@@ -736,7 +736,7 @@
       let matchedPairs = 0;
       let gameActive = false;
       let timer;
-      let timeLeft = 10;
+      let timeLeft = 5;
       let currentBetAmount = 100;
       let userId;
 
@@ -875,7 +875,7 @@
         gameActive = true;
 
         // Start timer
-        timeLeft = 10;
+        timeLeft = 5;
         timeLeftEl.textContent = timeLeft;
         gameTimer.style.display = "flex";
 
