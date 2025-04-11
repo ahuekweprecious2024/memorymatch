@@ -818,38 +818,41 @@
 
       // Flip card function
       function flipCard(card) {
+        // Check if the card can be flipped
         if (
           !gameActive ||
           card.classList.contains("flipped") ||
           card.classList.contains("matched") ||
           card.classList.contains("disabled") ||
-          currentTurnPlayerId !== currentPlayerId
+          currentTurnPlayerId !== currentPlayerId ||
+          flippedCards.length >= 2
         ) {
           return;
         }
-
-        // Don't allow flipping if there are already 2 cards flipped
-        if (flippedCards.length >= 2) return;
 
         card.classList.add("flipped");
         flippedCards.push(card);
 
         // Broadcast the card flip to other players
-        if (gameRef) {
+        if (movesRef) {
           movesRef.push({
             playerId: currentPlayerId,
-            cardIndex: card.dataset.index,
-            timestamp: Date.now(),
+            cardIndex: parseInt(card.dataset.index),
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
           });
         }
 
         if (flippedCards.length === 2) {
-          checkForMatch();
+          setTimeout(() => {
+            checkForMatch();
+          }, 500);
         }
       }
 
       // Check for matching cards
       function checkForMatch() {
+        if (flippedCards.length !== 2) return;
+
         const [card1, card2] = flippedCards;
 
         if (card1.dataset.value === card2.dataset.value) {
@@ -862,7 +865,7 @@
           // Update score for current player
           if (currentPlayerId === player1Id) {
             player1Matches++;
-          } else {
+          } else if (currentPlayerId === player2Id) {
             player2Matches++;
           }
 
@@ -892,6 +895,7 @@
           player1Matches: player1Matches,
           player2Matches: player2Matches,
           matchedPairs: matchedPairs,
+          lastUpdate: firebase.database.ServerValue.TIMESTAMP,
         });
       }
 
@@ -905,39 +909,30 @@
 
         gameRef.update({
           currentTurn: newTurnPlayerId,
-          lastTurnSwitch: Date.now(),
+          lastTurnSwitch: firebase.database.ServerValue.TIMESTAMP,
         });
       }
 
       // Update the scores display
       function updateScores() {
-        if (currentPlayerId === player1Id) {
-          player1ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player1Matches} matches`;
-          player2ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player2Matches} matches`;
-          finalPlayer1ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player1Matches} matches`;
-          finalPlayer2ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player2Matches} matches`;
-        } else {
-          player1ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player2Matches} matches`;
-          player2ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player1Matches} matches`;
-          finalPlayer1ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player2Matches} matches`;
-          finalPlayer2ScoreEl.querySelector(
-            ".score"
-          ).textContent = `${player1Matches} matches`;
-        }
+        // Update player 1 score display
+        player1ScoreEl.querySelector(".score").textContent = `${
+          currentPlayerId === player1Id ? player1Matches : player2Matches
+        } matches`;
+
+        // Update player 2 score display
+        player2ScoreEl.querySelector(".score").textContent = `${
+          currentPlayerId === player1Id ? player2Matches : player1Matches
+        } matches`;
+
+        // Update final score displays
+        finalPlayer1ScoreEl.querySelector(".score").textContent = `${
+          currentPlayerId === player1Id ? player1Matches : player2Matches
+        } matches`;
+
+        finalPlayer2ScoreEl.querySelector(".score").textContent = `${
+          currentPlayerId === player1Id ? player2Matches : player1Matches
+        } matches`;
       }
 
       // Start game function
@@ -953,17 +948,23 @@
         gameRef.update({
           gameActive: true,
           currentTurn: player1Id,
-          lastTurnSwitch: Date.now(),
+          lastTurnSwitch: firebase.database.ServerValue.TIMESTAMP,
           player1Matches: 0,
           player2Matches: 0,
           matchedPairs: 0,
           timeLeft: timeLeft,
+          gameStarted: firebase.database.ServerValue.TIMESTAMP,
         });
 
         // Start timer
+        clearInterval(timer);
         timer = setInterval(() => {
           timeLeft--;
-          gameRef.update({ timeLeft: timeLeft });
+          timeLeftEl.textContent = timeLeft;
+
+          if (gameRef) {
+            gameRef.update({ timeLeft: timeLeft });
+          }
 
           if (timeLeft <= 0) {
             endGame(false);
@@ -977,7 +978,11 @@
         gameActive = false;
 
         if (gameRef) {
-          gameRef.update({ gameActive: false });
+          gameRef.update({
+            gameActive: false,
+            gameEnded: firebase.database.ServerValue.TIMESTAMP,
+            gameCompleted: completed,
+          });
         }
 
         if (completed) {
@@ -986,6 +991,23 @@
         } else {
           gameOverTitleEl.textContent = "Time's Up!";
           gameOverMessageEl.textContent = "The game has ended.";
+        }
+
+        // Determine winner
+        let winner = null;
+        if (player1Matches > player2Matches) {
+          winner = player1Id;
+        } else if (player2Matches > player1Matches) {
+          winner = player2Id;
+        }
+
+        if (winner) {
+          const isCurrentPlayerWinner = winner === currentPlayerId;
+          gameOverMessageEl.textContent += ` ${
+            isCurrentPlayerWinner ? "You won!" : "Your opponent won!"
+          }`;
+        } else if (player1Matches === player2Matches) {
+          gameOverMessageEl.textContent += " It's a tie!";
         }
 
         showGameOverModal();
@@ -1025,6 +1047,11 @@
 
       // Create a new game room
       function createRoom() {
+        if (!currentPlayerId) {
+          alert("You must be logged in to create a room");
+          return;
+        }
+
         const roomCode = generateRoomCode();
         currentRoomId = roomCode;
         isHost = true;
@@ -1035,65 +1062,58 @@
         movesRef = roomRef.child("moves");
 
         // Create the room with initial data
-        roomRef.set({
-          createdAt: Date.now(),
-          host: currentPlayerId,
-          status: "waiting",
-        });
+        roomRef
+          .set({
+            createdAt: firebase.database.ServerValue.TIMESTAMP,
+            host: currentPlayerId,
+            status: "waiting",
+          })
+          .then(() => {
+            // Add current player to the room
+            return playersRef.child(currentPlayerId).set({
+              name: currentPlayerName,
+              joinedAt: firebase.database.ServerValue.TIMESTAMP,
+              status: "ready",
+            });
+          })
+          .then(() => {
+            // Initialize game data
+            return gameRef.set({
+              gameActive: false,
+              currentTurn: null,
+              player1: null,
+              player2: null,
+              player1Matches: 0,
+              player2Matches: 0,
+              matchedPairs: 0,
+              timeLeft: 30,
+            });
+          })
+          .then(() => {
+            // Update UI
+            roomStatusEl.textContent = `Room created: ${roomCode}`;
+            displayRoomCodeEl.textContent = roomCode;
+            waitingMessageEl.textContent =
+              "Waiting for another player to join...";
+            showWaitingModal();
 
-        // Add current player to the room
-        playersRef.child(currentPlayerId).set({
-          name: currentPlayerName,
-          joinedAt: Date.now(),
-          status: "ready",
-        });
-
-        // Initialize game data
-        gameRef.set({
-          gameActive: false,
-          currentTurn: null,
-          player1: null,
-          player2: null,
-          player1Matches: 0,
-          player2Matches: 0,
-          matchedPairs: 0,
-          timeLeft: timeLeft,
-        });
-
-        // Update UI
-        roomStatusEl.textContent = `Room created: ${roomCode}`;
-        displayRoomCodeEl.textContent = roomCode;
-        waitingMessageEl.textContent = "Waiting for another player to join...";
-        showWaitingModal();
-
-        // Listen for players joining
-        playersRef.on("child_added", (snapshot) => {
-          updatePlayersList();
-
-          // Check if we have 2 players
-          playersRef.once("value").then((playersSnapshot) => {
-            const players = playersSnapshot.val();
-            const playerIds = Object.keys(players || {});
-
-            if (playerIds.length === 2) {
-              // Set up the game with both players
-              setupGame();
-            }
+            // Listen for players joining
+            setupRoomListeners();
+          })
+          .catch((error) => {
+            console.error("Error creating room:", error);
+            alert("Error creating room. Please try again.");
+            resetGameState();
           });
-        });
-
-        // Clean up if room is empty
-        playersRef.on("child_removed", () => {
-          playersRef.once("value").then((snapshot) => {
-            if (!snapshot.exists()) {
-              resetGameState();
-            }
-          });
-        });
       }
 
       // Join an existing room
       function joinRoom() {
+        if (!currentPlayerId) {
+          alert("You must be logged in to join a room");
+          return;
+        }
+
         const roomCode = roomCodeInput.value.trim().toUpperCase();
 
         if (!roomCode || roomCode.length !== 4) {
@@ -1114,43 +1134,35 @@
           .once("value")
           .then((snapshot) => {
             if (!snapshot.exists()) {
-              alert("Room not found. Please check the code and try again.");
-              resetGameState();
-              return;
+              throw new Error(
+                "Room not found. Please check the code and try again."
+              );
             }
 
             const roomData = snapshot.val();
 
             if (roomData.status !== "waiting") {
-              alert("This room is not accepting new players.");
-              resetGameState();
-              return;
+              throw new Error("This room is not accepting new players.");
             }
 
             // Check if room already has 2 players
             return playersRef.once("value");
           })
           .then((playersSnapshot) => {
-            if (!playersSnapshot) return;
-
             const players = playersSnapshot.val() || {};
 
             if (Object.keys(players).length >= 2) {
-              alert("This room is already full.");
-              resetGameState();
-              return;
+              throw new Error("This room is already full.");
             }
 
             // Add current player to the room
             return playersRef.child(currentPlayerId).set({
               name: currentPlayerName,
-              joinedAt: Date.now(),
+              joinedAt: firebase.database.ServerValue.TIMESTAMP,
               status: "ready",
             });
           })
           .then(() => {
-            if (!currentRoomId) return;
-
             // Update UI
             roomStatusEl.textContent = `Joined room: ${roomCode}`;
             displayRoomCodeEl.textContent = roomCode;
@@ -1158,182 +1170,178 @@
               "Waiting for host to start the game...";
             showWaitingModal();
 
-            // Listen for game setup
-            gameRef.on("value", (gameSnapshot) => {
-              const gameData = gameSnapshot.val() || {};
-
-              if (gameData.gameActive) {
-                hideWaitingModal();
-                setupGame();
-              }
-            });
+            // Setup room listeners
+            setupRoomListeners();
           })
           .catch((error) => {
             console.error("Error joining room:", error);
-            alert("Error joining room. Please try again.");
+            alert(error.message || "Error joining room. Please try again.");
             resetGameState();
           });
       }
 
-      // Setup the game with players
-      function setupGame() {
-        if (!currentRoomId) return;
+      // Setup listeners for room events
+      function setupRoomListeners() {
+        if (!roomRef || !playersRef || !gameRef || !movesRef) return;
 
-        // Get all players in the room
-        playersRef
-          .once("value")
-          .then((playersSnapshot) => {
-            const players = playersSnapshot.val();
-            const playerIds = Object.keys(players);
+        // Listen for players joining/leaving
+        playersRef.on("value", (snapshot) => {
+          updatePlayersList();
 
-            if (playerIds.length !== 2) {
-              console.error("Expected 2 players, found", playerIds.length);
-              return;
-            }
+          const players = snapshot.val() || {};
+          const playerIds = Object.keys(players);
 
-            // Set player IDs in the game
+          // If we have 2 players and we're the host, enable the start button
+          if (playerIds.length === 2 && isHost) {
+            startGameBtn.disabled = false;
+            hideWaitingModal();
+            gameSectionEl.style.display = "block";
+
+            // Set player IDs
             player1Id = playerIds[0];
             player2Id = playerIds[1];
 
-            const updates = {
+            // Update game data with player IDs
+            gameRef.update({
               player1: player1Id,
               player2: player2Id,
-              currentTurn: player1Id, // First player starts
-            };
+            });
+          } else if (playerIds.length < 2) {
+            startGameBtn.disabled = true;
+          }
 
-            return gameRef.update(updates);
-          })
-          .then(() => {
-            // Show game section
+          // If room is empty (except for us), reset
+          if (
+            playerIds.length === 0 ||
+            (playerIds.length === 1 && playerIds[0] === currentPlayerId)
+          ) {
+            if (!isHost) {
+              alert("The host has left the room.");
+              resetGameState();
+            }
+          }
+        });
+
+        // Listen for game state changes
+        gameRef.on("value", (snapshot) => {
+          const gameData = snapshot.val() || {};
+
+          // If game becomes active and we're not the host, show game section
+          if (gameData.gameActive && !isHost) {
+            hideWaitingModal();
             gameSectionEl.style.display = "block";
+
+            // Set player IDs
+            player1Id = gameData.player1;
+            player2Id = gameData.player2;
 
             // Initialize game board
             initGame();
+          }
 
-            // Set up player scores
-            gameRef
-              .once("value")
-              .then((gameSnapshot) => {
-                const gameData = gameSnapshot.val();
+          // Update timer
+          if (gameData.timeLeft !== undefined) {
+            timeLeft = gameData.timeLeft;
+            timeLeftEl.textContent = timeLeft;
+          }
 
-                player1ScoreEl.dataset.playerId = gameData.player1;
-                player2ScoreEl.dataset.playerId = gameData.player2;
+          // Update game active state
+          gameActive = gameData.gameActive || false;
 
-                // Get player names
-                return playersRef.once("value");
-              })
-              .then((playersSnapshot) => {
-                const players = playersSnapshot.val();
+          // Update current turn
+          if (gameData.currentTurn) {
+            currentTurnPlayerId = gameData.currentTurn;
 
-                if (player1ScoreEl.dataset.playerId === currentPlayerId) {
-                  player1ScoreEl.querySelector(".player-name").textContent =
-                    "You";
-                  player2ScoreEl.querySelector(".player-name").textContent =
-                    players[player2ScoreEl.dataset.playerId]?.name ||
-                    "Opponent";
-                  finalPlayer1ScoreEl.querySelector(
-                    ".player-name"
-                  ).textContent = "You";
-                  finalPlayer2ScoreEl.querySelector(
-                    ".player-name"
-                  ).textContent =
-                    players[player2ScoreEl.dataset.playerId]?.name ||
-                    "Opponent";
-                } else {
-                  player1ScoreEl.querySelector(".player-name").textContent =
-                    players[player1ScoreEl.dataset.playerId]?.name ||
-                    "Opponent";
-                  player2ScoreEl.querySelector(".player-name").textContent =
-                    "You";
-                  finalPlayer1ScoreEl.querySelector(
-                    ".player-name"
-                  ).textContent =
-                    players[player1ScoreEl.dataset.playerId]?.name ||
-                    "Opponent";
-                  finalPlayer2ScoreEl.querySelector(
-                    ".player-name"
-                  ).textContent = "You";
-                }
+            if (currentTurnPlayerId === currentPlayerId) {
+              currentTurnEl.textContent = "Your turn!";
+              currentTurnEl.classList.add("your-turn");
+            } else {
+              currentTurnEl.textContent = "Opponent's turn";
+              currentTurnEl.classList.remove("your-turn");
+            }
+          }
 
-                // Enable start button for host
-                if (isHost) {
-                  startGameBtn.disabled = false;
-                }
-              });
+          // Update scores
+          if (
+            gameData.player1Matches !== undefined &&
+            gameData.player2Matches !== undefined
+          ) {
+            player1Matches = gameData.player1Matches;
+            player2Matches = gameData.player2Matches;
+            updateScores();
+          }
 
-            // Listen for game state changes
-            gameRef.on("value", (gameSnapshot) => {
-              const gameData = gameSnapshot.val() || {};
+          // Update matched pairs
+          if (gameData.matchedPairs !== undefined) {
+            matchedPairs = gameData.matchedPairs;
+          }
 
-              // Update timer
-              if (gameData.timeLeft !== undefined) {
-                timeLeft = gameData.timeLeft;
-                timeLeftEl.textContent = timeLeft;
+          // Update player names in score display
+          updatePlayerNames();
+        });
+
+        // Listen for moves from other players
+        movesRef.on("child_added", (moveSnapshot) => {
+          const move = moveSnapshot.val();
+
+          // Ignore our own moves
+          if (move.playerId === currentPlayerId) return;
+
+          // Process the move
+          const cardIndex = move.cardIndex;
+          const cards = gameBoardEl.querySelectorAll(".card");
+
+          if (cardIndex >= 0 && cardIndex < cards.length) {
+            const card = cards[cardIndex];
+
+            // Only flip if it's not already flipped or matched
+            if (
+              !card.classList.contains("flipped") &&
+              !card.classList.contains("matched")
+            ) {
+              card.classList.add("flipped");
+              flippedCards.push(card);
+
+              if (flippedCards.length === 2) {
+                setTimeout(() => {
+                  checkForMatch();
+                }, 500);
               }
+            }
+          }
+        });
+      }
 
-              // Update current turn
-              if (gameData.currentTurn) {
-                currentTurnPlayerId = gameData.currentTurn;
+      // Update player names in the score display
+      function updatePlayerNames() {
+        if (!playersRef) return;
 
-                if (currentTurnPlayerId === currentPlayerId) {
-                  currentTurnEl.textContent = "Your turn!";
-                  currentTurnEl.classList.add("your-turn");
-                } else {
-                  currentTurnEl.textContent = "Opponent's turn";
-                  currentTurnEl.classList.remove("your-turn");
-                }
-              }
+        playersRef.once("value").then((snapshot) => {
+          const players = snapshot.val() || {};
 
-              // Update scores
-              if (
-                gameData.player1Matches !== undefined &&
-                gameData.player2Matches !== undefined
-              ) {
-                player1Matches = gameData.player1Matches;
-                player2Matches = gameData.player2Matches;
-                updateScores();
-              }
+          if (player1Id && player2Id) {
+            const player1Name = players[player1Id]?.name || "Player 1";
+            const player2Name = players[player2Id]?.name || "Player 2";
 
-              // Update game active state
-              gameActive = gameData.gameActive || false;
-
-              // Update matched pairs
-              if (gameData.matchedPairs !== undefined) {
-                matchedPairs = gameData.matchedPairs;
-              }
-            });
-
-            // Listen for moves from other players
-            movesRef.on("child_added", (moveSnapshot) => {
-              const move = moveSnapshot.val();
-
-              // Ignore our own moves
-              if (move.playerId === currentPlayerId) return;
-
-              // Process the move
-              const cardIndex = move.cardIndex;
-              const cards = gameBoardEl.querySelectorAll(".card");
-
-              if (cardIndex >= 0 && cardIndex < cards.length) {
-                const card = cards[cardIndex];
-
-                // Only flip if it's not already flipped or matched
-                if (
-                  !card.classList.contains("flipped") &&
-                  !card.classList.contains("matched")
-                ) {
-                  card.classList.add("flipped");
-                  flippedCards.push(card);
-
-                  if (flippedCards.length === 2) {
-                    setTimeout(() => {
-                      checkForMatch();
-                    }, 500);
-                  }
-                }
-              }
-            });
-          });
+            if (currentPlayerId === player1Id) {
+              player1ScoreEl.querySelector(".player-name").textContent = "You";
+              player2ScoreEl.querySelector(".player-name").textContent =
+                player2Name;
+              finalPlayer1ScoreEl.querySelector(".player-name").textContent =
+                "You";
+              finalPlayer2ScoreEl.querySelector(".player-name").textContent =
+                player2Name;
+            } else {
+              player1ScoreEl.querySelector(".player-name").textContent =
+                player1Name;
+              player2ScoreEl.querySelector(".player-name").textContent = "You";
+              finalPlayer1ScoreEl.querySelector(".player-name").textContent =
+                player1Name;
+              finalPlayer2ScoreEl.querySelector(".player-name").textContent =
+                "You";
+            }
+          }
+        });
       }
 
       // Update the players list in the lobby
@@ -1381,21 +1389,41 @@
 
         // Remove player from room
         if (playersRef && currentPlayerId) {
-          playersRef.child(currentPlayerId).remove();
+          playersRef
+            .child(currentPlayerId)
+            .remove()
+            .then(() => {
+              // If host leaves, remove the entire room
+              if (isHost && roomRef) {
+                return roomRef.remove();
+              }
+            })
+            .then(() => {
+              // Reset game state
+              resetGameState();
+            })
+            .catch((error) => {
+              console.error("Error leaving room:", error);
+              // Still reset game state even if there's an error
+              resetGameState();
+            });
+        } else {
+          resetGameState();
         }
-
-        // If host leaves, remove the entire room
-        if (isHost && roomRef) {
-          roomRef.remove();
-        }
-
-        // Reset game state
-        resetGameState();
       }
 
       // Reset all game state variables
       function resetGameState() {
+        // Clear all Firebase listeners
+        if (roomRef) roomRef.off();
+        if (gameRef) gameRef.off();
+        if (playersRef) playersRef.off();
+        if (movesRef) movesRef.off();
+
+        // Clear timer
         clearInterval(timer);
+
+        // Reset all game variables
         gameActive = false;
         currentRoomId = null;
         currentTurnPlayerId = null;
@@ -1408,6 +1436,8 @@
         player2Id = null;
         player1Matches = 0;
         player2Matches = 0;
+        flippedCards = [];
+        matchedPairs = 0;
 
         // Update UI
         roomStatusEl.textContent = "Not connected to any room";
@@ -1416,78 +1446,93 @@
         hideGameOverModal();
         playersListEl.innerHTML = "";
         startGameBtn.disabled = true;
+        roomCodeInput.value = "";
       }
 
       // Event listeners
-      joinRoomBtn.addEventListener("click", joinRoom);
-      createRoomBtn.addEventListener("click", createRoom);
-      cancelWaitingBtn.addEventListener("click", leaveRoom);
-      startGameBtn.addEventListener("click", startGame);
-      playAgainBtn.addEventListener("click", () => {
-        hideGameOverModal();
-        if (isHost) {
-          startGame();
-        }
-      });
-      returnToLobbyBtn.addEventListener("click", () => {
-        hideGameOverModal();
-        leaveRoom();
-      });
-      closeGameOverModal.addEventListener("click", hideGameOverModal);
+      document.addEventListener("DOMContentLoaded", () => {
+        joinRoomBtn.addEventListener("click", joinRoom);
+        createRoomBtn.addEventListener("click", createRoom);
+        cancelWaitingBtn.addEventListener("click", leaveRoom);
+        startGameBtn.addEventListener("click", startGame);
 
-      logoutBtn.addEventListener("click", () => {
-        auth
-          .signOut()
-          .then(() => {
-            window.location.href = "auth.html";
-          })
-          .catch((error) => {
-            console.error("Logout error:", error);
-          });
-      });
-
-      // Close modals when clicking outside
-      window.addEventListener("click", (event) => {
-        if (event.target === waitingModal) {
-          hideWaitingModal();
-        }
-        if (event.target === gameOverModal) {
+        playAgainBtn.addEventListener("click", () => {
           hideGameOverModal();
-        }
-      });
+          if (isHost) {
+            startGame();
+          }
+        });
 
-      // Check authentication state and load user data
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          // User is signed in
-          currentPlayerId = user.uid;
-          currentPlayerName = user.displayName || "Player";
+        returnToLobbyBtn.addEventListener("click", () => {
+          hideGameOverModal();
+          leaveRoom();
+        });
 
-          // Load user data from database
-          database
-            .ref("users/" + currentPlayerId)
-            .once("value")
-            .then((snapshot) => {
-              const userData = snapshot.val();
+        closeGameOverModal.addEventListener("click", hideGameOverModal);
 
-              // Update UI with user data
-              usernameEl.textContent = userData?.name || "User";
-              userEmailEl.textContent = user.email;
+        logoutBtn.addEventListener("click", () => {
+          leaveRoom(); // Make sure to leave any room before logging out
+
+          auth
+            .signOut()
+            .then(() => {
+              window.location.href = "auth.html";
             })
             .catch((error) => {
-              console.error("Error loading user data:", error);
+              console.error("Logout error:", error);
             });
-        } else {
-          // No user is signed in, redirect to auth page
-          window.location.href = "auth.html";
-        }
-      });
+        });
 
-      // Clean up when page is unloaded
-      window.addEventListener("beforeunload", () => {
-        if (currentRoomId) {
-          leaveRoom();
-        }
+        // Close modals when clicking outside
+        window.addEventListener("click", (event) => {
+          if (event.target === waitingModal) {
+            hideWaitingModal();
+          }
+          if (event.target === gameOverModal) {
+            hideGameOverModal();
+          }
+        });
+
+        // Check authentication state and load user data
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in
+            currentPlayerId = user.uid;
+            currentPlayerName = user.displayName || "Player";
+
+            // Load user data from database
+            database
+              .ref("users/" + currentPlayerId)
+              .once("value")
+              .then((snapshot) => {
+                const userData = snapshot.val() || {};
+
+                // Update UI with user data
+                usernameEl.textContent =
+                  userData.name || user.displayName || "User";
+                userEmailEl.textContent = user.email || "user@example.com";
+              })
+              .catch((error) => {
+                console.error("Error loading user data:", error);
+                // Still show something even if there's an error
+                usernameEl.textContent = user.displayName || "User";
+                userEmailEl.textContent = user.email || "user@example.com";
+              });
+          } else {
+            // No user is signed in, redirect to auth page
+            window.location.href = "auth.html";
+          }
+        });
+
+        // Clean up when page is unloaded
+        window.addEventListener("beforeunload", () => {
+          if (currentRoomId) {
+            // Try to leave room gracefully
+            if (playersRef && currentPlayerId) {
+              playersRef.child(currentPlayerId).remove();
+            }
+          }
+        });
       });
     </script>
   </body>
