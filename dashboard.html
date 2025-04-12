@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memory Game Dashboard</title>
+    <title>Memory Match Game</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -22,6 +22,7 @@
         --success: #4cc9f0;
         --danger: #f72585;
         --warning: #f8961e;
+        --info: #560bad;
       }
 
       * {
@@ -42,13 +43,16 @@
         padding: 20px;
       }
 
+      /* Header Section */
       header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 0;
+        padding: 15px 20px;
         margin-bottom: 30px;
-        border-bottom: 1px solid #e0e0e0;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       }
 
       .user-info {
@@ -79,44 +83,92 @@
         color: #666;
       }
 
+      /* Wallet Section */
       .wallet-section {
-        background-color: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 20px;
         margin-bottom: 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
       }
 
-      .wallet-balance h2 {
-        font-size: 14px;
-        color: #666;
+      @media (max-width: 768px) {
+        .wallet-section {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .wallet-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wallet-card.balance-card {
+        border-left: 5px solid var(--primary);
+      }
+
+      .wallet-card.actions-card {
+        border-left: 5px solid var(--accent);
+      }
+
+      .wallet-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .wallet-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(67, 97, 238, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      .wallet-title h3 {
+        font-size: 18px;
+        color: var(--dark);
         margin-bottom: 5px;
       }
 
+      .wallet-title p {
+        font-size: 14px;
+        color: #666;
+      }
+
       .wallet-amount {
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 700;
-        color: var(--primary);
+        color: var(--dark);
+        margin: 15px 0 25px;
       }
 
       .wallet-actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 15px;
       }
 
       .wallet-btn {
-        padding: 10px 20px;
-        border-radius: 8px;
+        padding: 15px;
+        border-radius: 10px;
         border: none;
         font-weight: 600;
+        font-size: 16px;
         cursor: pointer;
         transition: all 0.3s;
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        gap: 10px;
       }
 
       .deposit-btn {
@@ -132,12 +184,18 @@
       .wallet-btn:hover {
         opacity: 0.9;
         transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
+      .wallet-btn i {
+        font-size: 18px;
+      }
+
+      /* Game Section */
       .game-section {
         background-color: white;
         border-radius: 12px;
-        padding: 25px;
+        padding: 30px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         margin-bottom: 30px;
       }
@@ -146,55 +204,50 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
       }
 
       .game-title h2 {
-        font-size: 22px;
+        font-size: 24px;
         color: var(--dark);
+        margin-bottom: 5px;
       }
 
       .game-title p {
-        font-size: 14px;
+        font-size: 16px;
         color: #666;
-      }
-
-      .game-timer {
-        background-color: var(--dark);
-        color: white;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
       }
 
       .game-board {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+      }
+
+      @media (max-width: 768px) {
+        .game-board {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       .card {
         aspect-ratio: 1/1;
-        border-radius: 10px;
+        border-radius: 12px;
         background-color: var(--primary);
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
-        font-size: 24px;
+        font-size: 28px;
         cursor: pointer;
         transition: all 0.3s;
         transform-style: preserve-3d;
         position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       .card.flipped {
-        background-color: white;
-        color: var(--dark);
         transform: rotateY(180deg);
       }
 
@@ -212,7 +265,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius: 10px;
+        border-radius: 12px;
       }
 
       .card-back {
@@ -220,78 +273,110 @@
         color: white;
       }
 
+      .card-back i {
+        font-size: 36px;
+      }
+
       .card-front {
         background-color: white;
         color: var(--dark);
         transform: rotateY(180deg);
         border: 2px solid #eee;
+        font-size: 40px;
       }
 
       .game-controls {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 20px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
       }
 
       .bet-control {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
+      }
+
+      .bet-control label {
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--dark);
       }
 
       .bet-amount {
-        padding: 10px 15px;
+        padding: 12px 15px;
         border-radius: 8px;
         border: 1px solid #ddd;
         font-size: 16px;
-        width: 100px;
+        width: 150px;
         text-align: center;
+        font-weight: 600;
       }
 
       .start-btn {
-        padding: 12px 25px;
+        padding: 15px 30px;
         background-color: var(--primary);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: 600;
+        font-size: 16px;
         cursor: pointer;
         transition: all 0.3s;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+      }
+
+      .start-btn i {
+        font-size: 18px;
       }
 
       .start-btn:hover {
         background-color: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       .start-btn:disabled {
         background-color: #ccc;
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
 
+      /* How to Play Section */
       .how-to-play {
         background-color: white;
         border-radius: 12px;
-        padding: 25px;
+        padding: 30px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       }
 
       .how-to-play h2 {
-        font-size: 20px;
-        margin-bottom: 15px;
+        font-size: 22px;
+        margin-bottom: 20px;
         color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .how-to-play h2 i {
+        color: var(--info);
       }
 
       .how-to-play ol {
-        padding-left: 20px;
+        padding-left: 25px;
       }
 
       .how-to-play li {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         line-height: 1.6;
+        font-size: 16px;
       }
 
       /* Modal styles */
@@ -302,25 +387,27 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.6);
         z-index: 1000;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(4px);
       }
 
       .modal-content {
         background-color: white;
-        border-radius: 12px;
+        border-radius: 15px;
         width: 90%;
-        max-width: 400px;
-        padding: 25px;
+        max-width: 450px;
+        padding: 30px;
         animation: modalFadeIn 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
 
       @keyframes modalFadeIn {
         from {
           opacity: 0;
-          transform: translateY(-20px);
+          transform: translateY(-30px);
         }
         to {
           opacity: 1;
@@ -332,60 +419,94 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
       }
 
       .modal-header h2 {
-        font-size: 22px;
+        font-size: 24px;
         color: var(--dark);
       }
 
       .close-modal {
         background: none;
         border: none;
-        font-size: 24px;
+        font-size: 28px;
         cursor: pointer;
         color: #666;
+        transition: color 0.2s;
+      }
+
+      .close-modal:hover {
+        color: var(--danger);
       }
 
       .modal-body {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
+        text-align: center;
       }
 
       .modal-body p {
         margin-bottom: 15px;
         line-height: 1.6;
+        font-size: 16px;
       }
 
       .win-amount {
-        font-size: 28px;
+        font-size: 36px;
         font-weight: 700;
         color: var(--success);
         text-align: center;
-        margin: 15px 0;
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .loss-amount {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--danger);
+        text-align: center;
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
       }
 
       .modal-footer {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        justify-content: center;
       }
 
       .modal-btn {
-        padding: 10px 20px;
-        border-radius: 8px;
+        padding: 15px 30px;
+        border-radius: 10px;
         border: none;
         font-weight: 600;
+        font-size: 16px;
         cursor: pointer;
+        transition: all 0.3s;
       }
 
       .play-again-btn {
         background-color: var(--primary);
         color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
+      .play-again-btn:hover {
+        background-color: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Buttons */
       .logout-btn {
-        padding: 8px 15px;
+        padding: 12px 20px;
         background-color: var(--danger);
         color: white;
         border: none;
@@ -394,49 +515,78 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        transition: all 0.3s;
       }
 
-      @media (max-width: 768px) {
+      .logout-btn:hover {
+        background-color: #d3164e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .multiplayer-btn {
+        padding: 15px 25px;
+        background-color: var(--info);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+        margin-bottom: 30px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .multiplayer-btn i {
+        font-size: 18px;
+      }
+
+      .multiplayer-btn:hover {
+        background-color: #3a0ca3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 576px) {
         header {
           flex-direction: column;
-          align-items: flex-start;
           gap: 15px;
+          padding: 15px;
         }
 
-        .wallet-section {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 15px;
-        }
-
-        .wallet-actions {
+        .user-info {
           width: 100%;
-        }
-
-        .wallet-btn {
-          flex: 1;
           justify-content: center;
         }
 
-        .game-board {
-          grid-template-columns: repeat(3, 1fr);
+        .logout-btn {
+          width: 100%;
+          justify-content: center;
         }
 
         .game-controls {
           flex-direction: column;
-          gap: 15px;
-          align-items: flex-start;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .game-board {
-          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
         }
 
-        .wallet-actions {
-          flex-direction: column;
+        .bet-control {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .start-btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .wallet-amount {
+          font-size: 28px;
         }
       }
 
@@ -583,39 +733,56 @@
         </button>
       </header>
 
-      <div class="wallet-section">
-        <div class="wallet-balance">
-          <h2>Wallet Balance</h2>
-          <div class="wallet-amount" id="walletBalance">₦0.00</div>
-        </div>
-        <div class="wallet-actions">
-          <button class="wallet-btn deposit-btn" id="depositBtn">
-            <i class="fas fa-plus"></i> Deposit
-          </button>
-          <button class="wallet-btn withdraw-btn" id="withdrawBtn">
-            <i class="fas fa-minus"></i> Withdraw
-          </button>
-        </div>
-      </div>
-
       <button
-        class="logout-btn"
+        class="multiplayer-btn"
         id="joinroom"
         onclick="window.location.href='multiplayer.html'"
       >
-        <i class="fas fa-house"></i> Multiplayer
+        <i class="fas fa-users"></i> Play Multiplayer Mode
       </button>
 
-      <br />
+      <!-- Wallet Section -->
+      <div class="wallet-section">
+        <div class="wallet-card balance-card">
+          <div class="wallet-header">
+            <div class="wallet-icon">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div class="wallet-title">
+              <h3>Wallet Balance</h3>
+              <p>Available funds for gaming</p>
+            </div>
+          </div>
+          <div class="wallet-amount" id="walletBalance">₦0.00</div>
+        </div>
+
+        <div class="wallet-card actions-card">
+          <div class="wallet-header">
+            <div class="wallet-icon">
+              <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="wallet-title">
+              <h3>Transaction Actions</h3>
+              <p>Manage your funds easily</p>
+            </div>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn deposit-btn" id="depositBtn">
+              <i class="fas fa-arrow-circle-down"></i> Deposit
+            </button>
+            <button class="wallet-btn withdraw-btn" id="withdrawBtn">
+              <i class="fas fa-arrow-circle-up"></i> Withdraw
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Section -->
       <div class="game-section">
         <div class="game-header">
           <div class="game-title">
-            <h2>Memory Card Game</h2>
-            <p>Match pairs to win rewards</p>
-          </div>
-          <div class="game-timer" id="gameTimer" style="display: none">
-            <i class="fas fa-clock"></i>
-            <span id="timeLeft">7</span>s
+            <h2>Memory Match Game</h2>
+            <p>Find the matching pair to double your stake</p>
           </div>
         </div>
 
@@ -625,7 +792,7 @@
 
         <div class="game-controls">
           <div class="bet-control">
-            <label for="betAmount">Bet Amount:</label>
+            <label for="betAmount">Stake Amount:</label>
             <input
               type="number"
               id="betAmount"
@@ -636,22 +803,23 @@
             />
           </div>
           <button class="start-btn" id="startBtn">
-            <i class="fas fa-play"></i> Start Game
+            <i class="fas fa-play-circle"></i> Start Game
           </button>
         </div>
       </div>
 
       <div class="how-to-play">
-        <h2>How To Play</h2>
+        <h2><i class="fas fa-info-circle"></i> How To Play</h2>
         <ol>
           <li>
-            Click "Start Game" to begin (₦100 will be deducted from your
-            balance)
+            Enter your stake amount and click "Start Game" (your stake will be
+            deducted from your balance)
           </li>
-          <li>You have 11 seconds to find all matching pairs</li>
-          <li>Click on cards to flip them and find matching pairs</li>
-          <li>Each successful match earns you ₦200</li>
-          <li>You can increase your bet amount to win more</li>
+          <li>Click on a card to reveal it</li>
+          <li>Click on another card to try to find a match</li>
+          <li>If you find the matching pair, you win 2x your stake amount!</li>
+          <li>If the cards don't match, you lose your stake amount</li>
+          <li>You only get one chance to match the cards per game</li>
           <li>Make sure you have enough balance before starting a game</li>
         </ol>
       </div>
@@ -661,35 +829,41 @@
     <div class="modal" id="winModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Congratulations!</h2>
+          <h2>Congratulations! 🎉</h2>
           <button class="close-modal" id="closeWinModal">&times;</button>
         </div>
         <div class="modal-body">
-          <p>You matched a pair correctly!</p>
-          <div class="win-amount" id="winAmount">+₦200</div>
-          <p>Keep playing to win more rewards!</p>
+          <p>You found the matching pair!</p>
+          <div class="win-amount" id="winAmount">
+            <i class="fas fa-coins"></i> +₦200
+          </div>
+          <p>Your winnings have been added to your balance.</p>
         </div>
         <div class="modal-footer">
           <button class="modal-btn play-again-btn" id="continuePlayingBtn">
-            Continue Playing
+            <i class="fas fa-redo"></i> Play Again
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Game Over Modal -->
-    <div class="modal" id="gameOverModal">
+    <!-- Loss Modal -->
+    <div class="modal" id="lossModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Game Over</h2>
-          <button class="close-modal" id="closeGameOverModal">&times;</button>
+          <h2>No Match 😕</h2>
+          <button class="close-modal" id="closeLossModal">&times;</button>
         </div>
         <div class="modal-body">
-          <p id="gameOverMessage">Time's up! Better luck next time.</p>
+          <p>The cards didn't match.</p>
+          <div class="loss-amount" id="lossAmount">
+            <i class="fas fa-coins"></i> -₦100
+          </div>
+          <p>Better luck next time!</p>
         </div>
         <div class="modal-footer">
-          <button class="modal-btn play-again-btn" id="playAgainBtn">
-            Play Again
+          <button class="modal-btn play-again-btn" id="tryAgainBtn">
+            <i class="fas fa-redo"></i> Try Again
           </button>
         </div>
       </div>
@@ -701,14 +875,13 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-      // Firebase configuration (same as auth.html)
+      // Firebase configuration
       const firebaseConfig = {
-        // Replace with your Firebase project configuration
         apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
         authDomain: "moniebase-b4b4d.firebaseapp.com",
         projectId: "moniebase-b4b4d",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "1009678808253 ",
+        storageBucket: "moniebase-b4b4d.appspot.com",
+        messagingSenderId: "1009678808253",
         appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
         databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
       };
@@ -726,43 +899,45 @@
       const withdrawBtn = document.getElementById("withdrawBtn");
       const logoutBtn = document.getElementById("logoutBtn");
       const gameBoard = document.getElementById("gameBoard");
-      const gameTimer = document.getElementById("gameTimer");
-      const timeLeftEl = document.getElementById("timeLeft");
       const startBtn = document.getElementById("startBtn");
       const betAmountEl = document.getElementById("betAmount");
       const winModal = document.getElementById("winModal");
       const closeWinModal = document.getElementById("closeWinModal");
       const continuePlayingBtn = document.getElementById("continuePlayingBtn");
       const winAmountEl = document.getElementById("winAmount");
-      const gameOverModal = document.getElementById("gameOverModal");
-      const closeGameOverModal = document.getElementById("closeGameOverModal");
-      const playAgainBtn = document.getElementById("playAgainBtn");
-      const gameOverMessageEl = document.getElementById("gameOverMessage");
+      const lossModal = document.getElementById("lossModal");
+      const closeLossModal = document.getElementById("closeLossModal");
+      const tryAgainBtn = document.getElementById("tryAgainBtn");
+      const lossAmountEl = document.getElementById("lossAmount");
 
       // Game variables
       let cards = [];
       let flippedCards = [];
-      let matchedPairs = 0;
       let gameActive = false;
-      let timer;
-      let timeLeft = 7;
       let currentBetAmount = 100;
       let userId;
+      const TOTAL_CARDS = 6; // Total number of cards in the game (can be changed to 8)
 
       // Emoji pairs for the game
       const emojis = [
-        "🐶",
-        "🐱",
-        "🐭",
-        "🐹",
-        "🐰",
-        "🦊",
-        "🐻",
-        "🐼",
-        "🐨",
-        "🐯",
-        "🦁",
-        "🐮",
+        "🎯",
+        "🎮",
+        "🎲",
+        "🎪",
+        "🎭",
+        "🎨",
+        "🎬",
+        "🎤",
+        "🎧",
+        "🎸",
+        "🎹",
+        "💰",
+        "🏆",
+        "🎁",
+        "🎉",
+        "🎊",
+        "🎈",
+        "🎵",
       ];
 
       // Initialize the game
@@ -770,11 +945,32 @@
         // Clear any existing game
         gameBoard.innerHTML = "";
         flippedCards = [];
-        matchedPairs = 0;
 
-        // Create pairs of cards
-        const gameEmojis = [...emojis.slice(0, 6), ...emojis.slice(0, 6)];
-        cards = shuffleArray(gameEmojis);
+        // Create cards array with only one matching pair
+        cards = [];
+
+        // Select a random emoji for the matching pair
+        const matchingEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // Add the matching pair
+        cards.push(matchingEmoji);
+        cards.push(matchingEmoji);
+
+        // Fill the rest with different emojis
+        const remainingEmojis = emojis.filter(
+          (emoji) => emoji !== matchingEmoji
+        );
+
+        // Shuffle the remaining emojis
+        const shuffledEmojis = shuffleArray(remainingEmojis);
+
+        // Add unique emojis to fill up to TOTAL_CARDS
+        for (let i = 0; i < TOTAL_CARDS - 2; i++) {
+          cards.push(shuffledEmojis[i]);
+        }
+
+        // Shuffle all cards
+        cards = shuffleArray(cards);
 
         // Create card elements
         cards.forEach((emoji, index) => {
@@ -815,7 +1011,8 @@
         if (
           !gameActive ||
           card.classList.contains("flipped") ||
-          card.classList.contains("matched")
+          card.classList.contains("matched") ||
+          flippedCards.length >= 2
         ) {
           return;
         }
@@ -831,31 +1028,28 @@
       // Check for matching cards
       function checkForMatch() {
         const [card1, card2] = flippedCards;
+        gameActive = false; // Disable further moves
 
         if (card1.dataset.value === card2.dataset.value) {
           // Match found
           card1.classList.add("matched");
           card2.classList.add("matched");
-          flippedCards = [];
-          matchedPairs++;
 
-          // Award points
+          // Award winnings
           const winAmount = currentBetAmount * 2;
-          winAmountEl.textContent = `+₦${winAmount}`;
+          winAmountEl.innerHTML = `<i class="fas fa-coins"></i> +₦${winAmount}`;
           showWinModal();
           updateBalance(winAmount);
-
-          // Check if all pairs are matched
-          if (matchedPairs === 6) {
-            endGame(true);
-          }
         } else {
-          // No match, flip cards back after delay
+          // No match
           setTimeout(() => {
             card1.classList.remove("flipped");
             card2.classList.remove("flipped");
-            flippedCards = [];
           }, 1000);
+
+          // Show loss
+          lossAmountEl.innerHTML = `<i class="fas fa-coins"></i> -₦${currentBetAmount}`;
+          showLossModal();
         }
       }
 
@@ -863,14 +1057,21 @@
       function startGame() {
         const betAmount = parseInt(betAmountEl.value);
 
-        if (isNaN(betAmount) || betAmount < 100) {
-          alert("Minimum bet amount is ₦100");
+        if (isNaN(betAmount)) {
+          alert("Please enter a valid amount");
           return;
         }
 
-        if (
-          betAmount > parseFloat(walletBalanceEl.textContent.replace("₦", ""))
-        ) {
+        if (betAmount < 100) {
+          alert("Minimum stake amount is ₦100");
+          return;
+        }
+
+        const currentBalance = parseFloat(
+          walletBalanceEl.textContent.replace("₦", "")
+        );
+
+        if (betAmount > currentBalance) {
           alert("Insufficient balance");
           return;
         }
@@ -883,38 +1084,14 @@
         initGame();
         gameActive = true;
 
-        // Start timer
-        timeLeft = 7;
-        timeLeftEl.textContent = timeLeft;
-        gameTimer.style.display = "flex";
-
-        timer = setInterval(() => {
-          timeLeft--;
-          timeLeftEl.textContent = timeLeft;
-
-          if (timeLeft <= 0) {
-            endGame(false);
-          }
-        }, 1000);
-
         // Disable start button during game
         startBtn.disabled = true;
       }
 
       // End game function
-      function endGame(completed) {
-        clearInterval(timer);
+      function endGame() {
         gameActive = false;
         startBtn.disabled = false;
-
-        if (completed) {
-          gameOverMessageEl.textContent =
-            "Congratulations! You matched all pairs!";
-        } else {
-          gameOverMessageEl.textContent = "Time's up! Better luck next time.";
-        }
-
-        showGameOverModal();
       }
 
       // Update user balance
@@ -941,16 +1118,18 @@
       // Hide win modal
       function hideWinModal() {
         winModal.style.display = "none";
+        endGame();
       }
 
-      // Show game over modal
-      function showGameOverModal() {
-        gameOverModal.style.display = "flex";
+      // Show loss modal
+      function showLossModal() {
+        lossModal.style.display = "flex";
       }
 
-      // Hide game over modal
-      function hideGameOverModal() {
-        gameOverModal.style.display = "none";
+      // Hide loss modal
+      function hideLossModal() {
+        lossModal.style.display = "none";
+        endGame();
       }
 
       // Event listeners
@@ -977,9 +1156,9 @@
 
       closeWinModal.addEventListener("click", hideWinModal);
       continuePlayingBtn.addEventListener("click", hideWinModal);
-      closeGameOverModal.addEventListener("click", hideGameOverModal);
-      playAgainBtn.addEventListener("click", () => {
-        hideGameOverModal();
+      closeLossModal.addEventListener("click", hideLossModal);
+      tryAgainBtn.addEventListener("click", () => {
+        hideLossModal();
         startGame();
       });
 
@@ -1021,8 +1200,8 @@
         if (event.target === winModal) {
           hideWinModal();
         }
-        if (event.target === gameOverModal) {
-          hideGameOverModal();
+        if (event.target === lossModal) {
+          hideLossModal();
         }
       });
 
