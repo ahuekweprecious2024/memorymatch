@@ -392,6 +392,7 @@
         animation: modalFadeIn 0.3s ease;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         text-align: center;
+        position: relative;
       }
 
       @keyframes modalFadeIn {
@@ -406,9 +407,6 @@
       }
 
       .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-bottom: 25px;
       }
 
@@ -622,7 +620,7 @@
           <button class="spin-btn" id="spinBtn">
             <i class="fas fa-redo"></i> Spin the Wheel
           </button>
-<!--           <p class="spin-cost">Each spin costs ₦150</p> -->
+          <p class="spin-cost">Each spin costs ₦150</p>
         </div>
       </div>
     </div>
@@ -690,7 +688,7 @@
       let isSpinning = false;
       let userId;
       let isAdmin = false;
-      const SPIN_COST = 150;
+      const SPIN_COST = 100;
 
       // Prizes configuration
       const NORMAL_PRIZES = [0, 50, 100, 200, 250];
@@ -767,7 +765,7 @@
           isSpinning = false;
           spinBtn.disabled = false;
 
-          // Show win modal
+          // Show win modal with the exact prize won
           showWinModal(prize);
         }, 4000);
       }
@@ -786,7 +784,7 @@
           winAmountEl.innerHTML = `<i class="fas fa-coins"></i> +₦${prize}`;
           winAmountEl.style.color = "var(--success)";
 
-          // Add the prize to the balance
+          // Add the exact prize amount to the balance
           updateBalance(prize);
         }
 
@@ -814,15 +812,64 @@
         }
       }
 
+      // Handle deposit action
+      function handleDeposit() {
+        const amount = prompt("Enter deposit amount:", "1000");
+        if (amount === null) return;
+
+        const depositAmount = parseFloat(amount);
+        if (isNaN(depositAmount) || depositAmount <= 0) {
+          alert("Please enter a valid amount.");
+          return;
+        }
+
+        updateBalance(depositAmount);
+        alert(`Successfully deposited ₦${depositAmount.toFixed(2)}`);
+      }
+
+      // Handle withdraw action
+      function handleWithdraw() {
+        const currentBalance = parseFloat(
+          walletBalanceEl.textContent.replace("₦", "")
+        );
+
+        const amount = prompt("Enter withdrawal amount:", "500");
+        if (amount === null) return;
+
+        const withdrawAmount = parseFloat(amount);
+        if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+          alert("Please enter a valid amount.");
+          return;
+        }
+
+        if (withdrawAmount > currentBalance) {
+          alert("Insufficient balance for withdrawal.");
+          return;
+        }
+
+        updateBalance(-withdrawAmount);
+        alert(`Successfully withdrew ₦${withdrawAmount.toFixed(2)}`);
+      }
+
       // Event listeners
       spinBtn.addEventListener("click", spinWheel);
 
       depositBtn.addEventListener("click", () => {
-        window.location.href = "deposit.html";
+        // Check if deposit.html exists, otherwise use the inline function
+        try {
+          window.location.href = "deposit.html";
+        } catch (e) {
+          handleDeposit();
+        }
       });
 
       withdrawBtn.addEventListener("click", () => {
-        window.location.href = "withdraw.html";
+        // Check if withdraw.html exists, otherwise use the inline function
+        try {
+          window.location.href = "withdraw.html";
+        } catch (e) {
+          handleWithdraw();
+        }
       });
 
       logoutBtn.addEventListener("click", () => {
@@ -833,6 +880,7 @@
           })
           .catch((error) => {
             console.error("Logout error:", error);
+            alert("Failed to log out. Please try again.");
           });
       });
 
@@ -851,6 +899,7 @@
         if (user) {
           // User is signed in
           userId = user.uid;
+          userEmailEl.textContent = user.email;
           isAdmin = user.email === "fuwukari@gmail.com";
 
           // Load user data from database
@@ -858,26 +907,49 @@
             .ref("users/" + userId)
             .once("value")
             .then((snapshot) => {
-              const userData = snapshot.val();
+              const userData = snapshot.val() || {};
 
               // Update UI with user data
-              usernameEl.textContent = userData.name || "User";
-              userEmailEl.textContent = user.email;
+              usernameEl.textContent =
+                userData.name || user.displayName || "User";
 
               // Initialize wallet balance (default to 0 if not set)
               const balance = userData.balance || 0;
               walletBalanceEl.textContent = `₦${balance.toFixed(2)}`;
 
-              // Create wheel sections
+              // If user data doesn't exist, create it
+              if (!userData.name) {
+                database.ref("users/" + userId).set({
+                  name: user.displayName || "User",
+                  email: user.email,
+                  balance: balance,
+                });
+              }
+
+              // Create wheel sections with correct prizes
               createWheelSections();
             })
             .catch((error) => {
               console.error("Error loading user data:", error);
+              alert("Failed to load user data. Please refresh the page.");
+
+              // Still create wheel sections even if data loading fails
+              createWheelSections();
             });
         } else {
           // No user is signed in, redirect to auth page
-          window.location.href = "auth.html";
+          try {
+            window.location.href = "auth.html";
+          } catch (e) {
+            alert("You are not logged in. Please log in to continue.");
+          }
         }
+      });
+
+      // Handle errors gracefully
+      window.addEventListener("error", function (event) {
+        console.error("Error occurred:", event.error);
+        alert("An error occurred. Please refresh the page and try again.");
       });
     </script>
   </body>
