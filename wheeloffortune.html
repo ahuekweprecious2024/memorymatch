@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wheel of Fortune</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --info: #560bad;
+        --gold: #ffd700;
+        --silver: #c0c0c0;
+        --bronze: #cd7f32;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Header Section */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+
+      .user-details h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      .user-details p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      /* Wallet Section */
+      .wallet-section {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      @media (max-width: 768px) {
+        .wallet-section {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .wallet-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wallet-card.balance-card {
+        border-left: 5px solid var(--primary);
+      }
+
+      .wallet-card.actions-card {
+        border-left: 5px solid var(--accent);
+      }
+
+      .wallet-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .wallet-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(67, 97, 238, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      .wallet-title h3 {
+        font-size: 18px;
+        color: var(--dark);
+        margin-bottom: 5px;
+      }
+
+      .wallet-title p {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .wallet-amount {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 15px 0 25px;
+      }
+
+      .wallet-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .wallet-btn {
+        padding: 15px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .deposit-btn {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .withdraw-btn {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .wallet-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .wallet-btn i {
+        font-size: 18px;
+      }
+
+      /* Game Section */
+      .game-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .game-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .game-title h2 {
+        font-size: 24px;
+        color: var(--dark);
+        margin-bottom: 5px;
+      }
+
+      .game-title p {
+        font-size: 16px;
+        color: #666;
+      }
+
+      /* Wheel of Fortune Styles */
+      .wheel-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 0 auto 30px;
+      }
+
+      @media (min-width: 768px) {
+        .wheel-container {
+          width: 400px;
+          height: 400px;
+        }
+      }
+
+      .wheel {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 0 8px #333, 0 0 30px rgba(0, 0, 0, 0.3);
+        transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        transform: rotate(0deg);
+      }
+
+      .wheel-center {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: #fff;
+        border: 8px solid #333;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .wheel-center::after {
+        content: "";
+        width: 20px;
+        height: 20px;
+        background: #333;
+        border-radius: 50%;
+      }
+
+      .wheel-arrow {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 40px solid #f00;
+        z-index: 5;
+        filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+      }
+
+      .section {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        transform-origin: bottom right;
+        left: 0;
+        top: 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .section-value {
+        position: absolute;
+        transform: rotate(45deg);
+        font-weight: bold;
+        font-size: 18px;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        text-align: center;
+        padding-right: 30%;
+      }
+
+      @media (min-width: 768px) {
+        .section-value {
+          font-size: 24px;
+        }
+      }
+
+      /* Game Controls */
+      .game-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .spin-btn {
+        padding: 15px 30px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      }
+
+      .spin-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+      }
+
+      .spin-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .spin-btn i {
+        font-size: 20px;
+      }
+
+      .spin-cost {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      /* Win Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(4px);
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 450px;
+        padding: 30px;
+        animation: modalFadeIn 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .modal-header h2 {
+        font-size: 24px;
+        color: var(--dark);
+        width: 100%;
+        text-align: center;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.2s;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+
+      .close-modal:hover {
+        color: var(--danger);
+      }
+
+      .modal-body {
+        margin-bottom: 25px;
+      }
+
+      .modal-body p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+        font-size: 16px;
+      }
+
+      .win-amount {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--success);
+        text-align: center;
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: center;
+      }
+
+      .modal-btn {
+        padding: 15px 30px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .play-again-btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .play-again-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Buttons */
+      .logout-btn {
+        padding: 12px 20px;
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+      }
+
+      .logout-btn:hover {
+        background-color: #d3164e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 576px) {
+        header {
+          flex-direction: column;
+          gap: 15px;
+          padding: 15px;
+        }
+
+        .user-info {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .logout-btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .wallet-amount {
+          font-size: 28px;
+        }
+      }
+
+      /* Prize colors */
+      .prize-0 {
+        background-color: #f72585;
+      }
+      .prize-50 {
+        background-color: #4895ef;
+      }
+      .prize-100 {
+        background-color: #4cc9f0;
+      }
+      .prize-200 {
+        background-color: #3f37c9;
+      }
+      .prize-250 {
+        background-color: #4361ee;
+      }
+      .prize-500 {
+        background-color: #25d366;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h3 id="username">Loading...</h3>
+            <p id="userEmail">user@example.com</p>
+          </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </header>
+
+      <!-- Wallet Section -->
+      <div class="wallet-section">
+        <div class="wallet-card balance-card">
+          <div class="wallet-header">
+            <div class="wallet-icon">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div class="wallet-title">
+              <h3>Wallet Balance</h3>
+              <p>Available funds for gaming</p>
+            </div>
+          </div>
+          <div class="wallet-amount" id="walletBalance">₦0.00</div>
+        </div>
+
+        <div class="wallet-card actions-card">
+          <div class="wallet-header">
+            <div class="wallet-icon">
+              <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="wallet-title">
+              <h3>Transaction Actions</h3>
+              <p>Manage your funds easily</p>
+            </div>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn deposit-btn" id="depositBtn">
+              <i class="fas fa-arrow-circle-down"></i> Deposit
+            </button>
+            <button class="wallet-btn withdraw-btn" id="withdrawBtn">
+              <i class="fas fa-arrow-circle-up"></i> Withdraw
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Section -->
+      <div class="game-section">
+        <div class="game-header">
+          <div class="game-title">
+            <h2>Wheel of Fortune</h2>
+            <p>Spin the wheel and win amazing prizes!</p>
+          </div>
+        </div>
+
+        <div class="wheel-container">
+          <div class="wheel" id="wheel"></div>
+          <div class="wheel-center"></div>
+          <div class="wheel-arrow"></div>
+        </div>
+
+        <div class="game-controls">
+          <button class="spin-btn" id="spinBtn">
+            <i class="fas fa-redo"></i> Spin the Wheel
+          </button>
+          <p class="spin-cost">Each spin costs ₦150</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="modal" id="winModal">
+      <div class="modal-content">
+        <button class="close-modal" id="closeWinModal">&times;</button>
+        <div class="modal-header">
+          <h2 id="winTitle">Congratulations! 🎉</h2>
+        </div>
+        <div class="modal-body">
+          <p id="winMessage">You won!</p>
+          <div class="win-amount" id="winAmount">
+            <i class="fas fa-coins"></i> +₦0
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn play-again-btn" id="continuePlayingBtn">
+            <i class="fas fa-redo"></i> Spin Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
+        authDomain: "moniebase-b4b4d.firebaseapp.com",
+        projectId: "moniebase-b4b4d",
+        storageBucket: "moniebase-b4b4d.appspot.com",
+        messagingSenderId: "1009678808253",
+        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
+        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const usernameEl = document.getElementById("username");
+      const userEmailEl = document.getElementById("userEmail");
+      const walletBalanceEl = document.getElementById("walletBalance");
+      const depositBtn = document.getElementById("depositBtn");
+      const withdrawBtn = document.getElementById("withdrawBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const wheelEl = document.getElementById("wheel");
+      const spinBtn = document.getElementById("spinBtn");
+      const winModal = document.getElementById("winModal");
+      const closeWinModal = document.getElementById("closeWinModal");
+      const continuePlayingBtn = document.getElementById("continuePlayingBtn");
+      const winAmountEl = document.getElementById("winAmount");
+      const winTitleEl = document.getElementById("winTitle");
+      const winMessageEl = document.getElementById("winMessage");
+
+      // Game variables
+      let isSpinning = false;
+      let userId;
+      let isAdmin = false;
+      const SPIN_COST = 150;
+
+      // Prizes configuration
+      const NORMAL_PRIZES = [0, 50, 100, 200, 250];
+      const ADMIN_PRIZES = [0, 50, 100, 200, 250, 500];
+
+      // Create wheel sections
+      function createWheelSections() {
+        wheelEl.innerHTML = "";
+        const prizes = isAdmin ? ADMIN_PRIZES : NORMAL_PRIZES;
+        const sectionAngle = 360 / prizes.length;
+
+        prizes.forEach((prize, index) => {
+          const section = document.createElement("div");
+          section.className = `section prize-${prize}`;
+          section.style.transform = `rotate(${index * sectionAngle}deg)`;
+
+          const value = document.createElement("div");
+          value.className = "section-value";
+          value.textContent = `₦${prize}`;
+
+          section.appendChild(value);
+          wheelEl.appendChild(section);
+        });
+      }
+
+      // Spin the wheel
+      function spinWheel() {
+        if (isSpinning) return;
+
+        const currentBalance = parseFloat(
+          walletBalanceEl.textContent.replace("₦", "")
+        );
+        if (currentBalance < SPIN_COST) {
+          alert("Insufficient balance. Please deposit more funds.");
+          return;
+        }
+
+        // Deduct spin cost
+        updateBalance(-SPIN_COST);
+
+        isSpinning = true;
+        spinBtn.disabled = true;
+
+        // Determine the prize (weighted towards lower prizes)
+        const prizes = isAdmin ? ADMIN_PRIZES : NORMAL_PRIZES;
+        const weights = isAdmin
+          ? [20, 30, 25, 15, 8, 2] // Admin weights (500 is rare)
+          : [20, 30, 25, 15, 10]; // Normal weights
+
+        const totalWeight = weights.reduce((a, b) => a + b, 0);
+        let random = Math.random() * totalWeight;
+        let prizeIndex = 0;
+
+        for (let i = 0; i < weights.length; i++) {
+          if (random < weights[i]) {
+            prizeIndex = i;
+            break;
+          }
+          random -= weights[i];
+        }
+
+        const prize = prizes[prizeIndex];
+        const sectionAngle = 360 / prizes.length;
+
+        // Calculate the angle to land on the selected prize
+        // We want the arrow to point to the middle of the section
+        const targetAngle = 3600 + prizeIndex * sectionAngle + sectionAngle / 2;
+
+        // Apply the spin animation
+        wheelEl.style.transform = `rotate(${-targetAngle}deg)`;
+
+        // After spinning completes
+        setTimeout(() => {
+          isSpinning = false;
+          spinBtn.disabled = false;
+
+          // Show win modal
+          showWinModal(prize);
+        }, 4000);
+      }
+
+      // Show win modal with the prize
+      function showWinModal(prize) {
+        if (prize === 0) {
+          winTitleEl.textContent = "Better Luck Next Time!";
+          winMessageEl.textContent =
+            "You didn't win this time, but you can try again!";
+          winAmountEl.innerHTML = `<i class="fas fa-coins"></i> ₦0`;
+          winAmountEl.style.color = "#666";
+        } else {
+          winTitleEl.textContent = "Congratulations! 🎉";
+          winMessageEl.textContent = "You won a prize!";
+          winAmountEl.innerHTML = `<i class="fas fa-coins"></i> +₦${prize}`;
+          winAmountEl.style.color = "var(--success)";
+
+          // Add the prize to the balance
+          updateBalance(prize);
+        }
+
+        winModal.style.display = "flex";
+      }
+
+      // Hide win modal
+      function hideWinModal() {
+        winModal.style.display = "none";
+      }
+
+      // Update user balance
+      function updateBalance(amount) {
+        const currentBalance = parseFloat(
+          walletBalanceEl.textContent.replace("₦", "")
+        );
+        const newBalance = currentBalance + amount;
+        walletBalanceEl.textContent = `₦${newBalance.toFixed(2)}`;
+
+        // Update balance in database
+        if (userId) {
+          database.ref("users/" + userId).update({
+            balance: newBalance,
+          });
+        }
+      }
+
+      // Event listeners
+      spinBtn.addEventListener("click", spinWheel);
+
+      depositBtn.addEventListener("click", () => {
+        window.location.href = "deposit.html";
+      });
+
+      withdrawBtn.addEventListener("click", () => {
+        window.location.href = "withdraw.html";
+      });
+
+      logoutBtn.addEventListener("click", () => {
+        auth
+          .signOut()
+          .then(() => {
+            window.location.href = "auth.html";
+          })
+          .catch((error) => {
+            console.error("Logout error:", error);
+          });
+      });
+
+      closeWinModal.addEventListener("click", hideWinModal);
+      continuePlayingBtn.addEventListener("click", hideWinModal);
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target === winModal) {
+          hideWinModal();
+        }
+      });
+
+      // Check authentication state and load user data
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          userId = user.uid;
+          isAdmin = user.email === "fuwukari@gmail.com";
+
+          // Load user data from database
+          database
+            .ref("users/" + userId)
+            .once("value")
+            .then((snapshot) => {
+              const userData = snapshot.val();
+
+              // Update UI with user data
+              usernameEl.textContent = userData.name || "User";
+              userEmailEl.textContent = user.email;
+
+              // Initialize wallet balance (default to 0 if not set)
+              const balance = userData.balance || 0;
+              walletBalanceEl.textContent = `₦${balance.toFixed(2)}`;
+
+              // Create wheel sections
+              createWheelSections();
+            })
+            .catch((error) => {
+              console.error("Error loading user data:", error);
+            });
+        } else {
+          // No user is signed in, redirect to auth page
+          window.location.href = "auth.html";
+        }
+      });
+    </script>
+  </body>
+</html>
