@@ -412,7 +412,7 @@
             </div>
           </div>
           <div class="note">
-            <strong>Note:</strong> Minimum deposit amount is ₦200. Deposits
+            <strong>Note:</strong> Minimum deposit amount is ₦500. Deposits
             below this amount will not be credited to your account.
           </div>
         </div>
@@ -424,7 +424,7 @@
             <li>Select "Transfer" or "Send Money" option</li>
             <li>Choose "Bank Transfer" or "Other Banks"</li>
             <li>Enter the account details provided above</li>
-            <li>Input the amount you wish to deposit (minimum ₦200)</li>
+            <li>Input the amount you wish to deposit (minimum ₦500)</li>
             <li>Complete the transaction and keep the receipt</li>
             <li>Click "I've made the transaction" button below</li>
             <li>Fill in the transaction details for verification</li>
@@ -477,7 +477,7 @@
                 type="number"
                 id="amountSent"
                 required
-                min="200"
+                min="500"
                 placeholder="Enter amount sent"
               />
             </div>
@@ -632,8 +632,8 @@
         const transactionRef = document.getElementById("transactionRef").value;
 
         // Validate amount
-        if (parseFloat(amountSent) < 200) {
-          alert("Minimum deposit amount is ₦200");
+        if (parseFloat(amountSent) < 500) {
+          alert("Minimum deposit amount is ₦500");
           return;
         }
 
