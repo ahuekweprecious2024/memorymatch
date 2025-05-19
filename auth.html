@@ -3,7 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memory Game - Login/Signup</title>
+    <title>Memory Game - Login & Signup</title>
+    <meta
+      name="description"
+      content="Test your memory skills and win amazing rewards with Memory Match Game"
+    />
+    <meta name="theme-color" content="#4361ee" />
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Memory Match" />
+
+    <!-- App Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="gamelogo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="gamelogo.png" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,15 +32,21 @@
       rel="stylesheet"
     />
     <style>
-      /* Styles remain unchanged */
       :root {
         --primary: #4361ee;
+        --primary-light: #4895ef;
         --secondary: #3f37c9;
-        --accent: #4895ef;
+        --accent: #4cc9f0;
         --light: #f8f9fa;
         --dark: #212529;
         --success: #4cc9f0;
         --danger: #f72585;
+        --warning: #f8961e;
+        --text: #2b2d42;
+        --text-light: #8d99ae;
+        --bg-gradient: linear-gradient(135deg, #4361ee, #3f37c9);
+        --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
       }
 
       * {
@@ -32,29 +57,204 @@
       }
 
       body {
-        background: linear-gradient(135deg, #4361ee, #3f37c9);
+        background: var(--bg-gradient);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 20px;
+        color: var(--text);
       }
 
       .container {
-        background-color: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         width: 100%;
-        max-width: 850px;
+        max-width: 1000px;
+        perspective: 1000px;
+      }
+
+      .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
         overflow: hidden;
-        animation: fadeIn 0.5s ease;
         display: flex;
+        min-height: 600px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: var(--transition);
+      }
+
+      @media (max-width: 768px) {
+        .auth-card {
+          flex-direction: column;
+          min-height: auto;
+        }
+      }
+
+      /* Hero Section */
+      .hero-section {
+        width: 40%;
+        background: var(--bg-gradient);
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: -1;
+        animation: rotate 20s linear infinite;
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .logo {
+        font-size: 60px;
+        margin-bottom: 20px;
+        color: white;
+        animation: pulse 2s infinite alternate;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(1.1);
+        }
+      }
+
+      .hero-section h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .hero-section p {
+        font-size: 16px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+        max-width: 300px;
+      }
+
+      .hero-image {
+        width: 100%;
+        max-width: 250px;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-section {
+          width: 100%;
+          padding: 30px 20px;
+        }
+
+        .logo {
+          font-size: 50px;
+        }
+
+        .hero-section h1 {
+          font-size: 28px;
+        }
+      }
+
+      /* Form Section */
+      .form-section {
+        width: 60%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      @media (max-width: 768px) {
+        .form-section {
+          width: 100%;
+          padding: 30px 20px;
+        }
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+        position: relative;
+      }
+
+      .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-light);
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .tab.active {
+        color: var(--primary);
+      }
+
+      .tab-indicator {
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        height: 3px;
+        width: 100px;
+        background: var(--primary);
+        border-radius: 3px 3px 0 0;
+        transition: var(--transition);
+      }
+
+      /* Forms */
+      .auth-form {
+        display: none;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .auth-form.active {
+        display: block;
       }
 
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(10px);
         }
         to {
           opacity: 1;
@@ -62,53 +262,17 @@
         }
       }
 
-      .header {
-        background: linear-gradient(to right, var(--primary), var(--secondary));
-        color: white;
-        padding: 25px;
-        text-align: center;
-        width: 40%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .header h1 {
-        font-size: 28px;
-        font-weight: 600;
+      .form-title {
+        font-size: 24px;
+        font-weight: 700;
         margin-bottom: 5px;
+        color: var(--text);
       }
 
-      .header p {
+      .form-subtitle {
         font-size: 14px;
-        opacity: 0.9;
-      }
-
-      .form-container {
-        padding: 30px;
-        width: 60%;
-      }
-
-      .forms-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-      }
-
-      .form-section {
-        border-bottom: 1px solid #eee;
-        padding-bottom: 20px;
-      }
-
-      .form-section:last-child {
-        border-bottom: none;
-      }
-
-      .form-section h2 {
-        font-size: 20px;
-        margin-bottom: 15px;
-        color: var(--dark);
+        color: var(--text-light);
+        margin-bottom: 30px;
       }
 
       .form-group {
@@ -120,59 +284,25 @@
         display: block;
         margin-bottom: 8px;
         font-weight: 500;
-        color: var(--dark);
+        color: var(--text);
+        font-size: 14px;
       }
 
-      .form-group input {
+      .form-control {
         width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+        padding: 15px 20px;
+        border: 2px solid #eee;
+        border-radius: 10px;
         font-size: 16px;
-        transition: all 0.3s;
+        transition: var(--transition);
+        background: #fafafa;
       }
 
-      .form-group input:focus {
-        border-color: var(--accent);
+      .form-control:focus {
+        border-color: var(--primary-light);
+        background: white;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-      }
-
-      .btn {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .btn-primary {
-        background-color: var(--primary);
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background-color: var(--secondary);
-      }
-
-      .error-message {
-        color: var(--danger);
-        font-size: 14px;
-        margin-top: 5px;
-        display: none;
-      }
-
-      .success-message {
-        color: var(--success);
-        font-size: 14px;
-        margin-top: 5px;
-        display: none;
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
       }
 
       .password-container {
@@ -181,169 +311,533 @@
 
       .password-toggle {
         position: absolute;
-        right: 10px;
+        right: 15px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
-        color: #777;
+        color: var(--text-light);
+        transition: var(--transition);
       }
 
-      .logo {
-        font-size: 40px;
+      .password-toggle:hover {
+        color: var(--primary);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-google {
+        background: white;
+        color: var(--text);
+        border: 2px solid #eee;
+        margin-bottom: 20px;
+      }
+
+      .btn-google:hover {
+        border-color: var(--primary-light);
+        background: #f8f9fa;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin: 0 10px;
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      .form-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Messages */
+      .message {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: none;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .error-message {
+        background: rgba(247, 37, 133, 0.1);
+        color: var(--danger);
+        border-left: 3px solid var(--danger);
+      }
+
+      .success-message {
+        background: rgba(76, 201, 240, 0.1);
+        color: var(--success);
+        border-left: 3px solid var(--success);
+      }
+
+      /* Social Icons */
+      .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+      }
+
+      .social-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .social-icon:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .social-icon.facebook {
+        background: #3b5998;
+      }
+
+      .social-icon.twitter {
+        background: #1da1f2;
+      }
+
+      .social-icon.apple {
+        background: #000;
+      }
+
+      /* Animations */
+      .floating {
+        animation: floating 3s ease-in-out infinite;
+      }
+
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Install App Section */
+      .install-app {
+        background: linear-gradient(135deg, #4cc9f0, #4361ee);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 0.5s ease;
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+      }
+
+      .install-app.show {
+        display: block;
+      }
+
+      .install-app-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
         margin-bottom: 15px;
+      }
+
+      .install-app-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-size: 24px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .install-app-title {
         color: white;
       }
 
-      .debug-info {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #f5f5f5;
-        border-radius: 8px;
-        font-size: 12px;
-        color: #666;
-        display: none;
+      .install-app-title h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
       }
 
-      @media (max-width: 768px) {
-        .container {
-          flex-direction: column;
-          max-width: 450px;
+      .install-app-title p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .install-btn {
+        background-color: white;
+        color: var(--primary);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .install-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .install-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 576px) {
+        .auth-card {
+          border-radius: 15px;
         }
 
-        .header {
-          width: 100%;
-          padding: 20px;
+        .form-title {
+          font-size: 22px;
         }
 
-        .form-container {
-          width: 100%;
-          padding: 20px;
+        .form-control {
+          padding: 12px 15px;
+        }
+
+        .btn {
+          padding: 12px;
+        }
+      }
+
+      /* Offline notification */
+      .offline-notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--dark);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        display: none;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .offline-notification.show {
+        display: block;
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translate(-50%, 20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <div class="logo">
-          <i class="fas fa-brain"></i>
-        </div>
-        <h1>Memory Game</h1>
-        <p>Test your memory and win rewards!</p>
-      </div>
-
-      <div class="form-container">
-        <div class="forms-wrapper">
-          <!-- Login Form -->
-          <div class="form-section">
-            <h2>Login</h2>
-            <form id="loginForm">
-              <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input
-                  type="email"
-                  id="loginEmail"
-                  required
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <div class="password-container">
-                  <input
-                    type="password"
-                    id="loginPassword"
-                    required
-                    placeholder="Enter your password"
-                  />
-                  <i
-                    class="fas fa-eye password-toggle"
-                    onclick="togglePassword('loginPassword', this)"
-                  ></i>
-                </div>
-              </div>
-              <p class="error-message" id="loginError"></p>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt" style="margin-right: 8px"></i>
-                Login
-              </button>
-            </form>
+      <div class="auth-card">
+        <!-- Hero Section -->
+        <div class="hero-section">
+          <div class="logo">
+            <i class="fas fa-brain"></i>
           </div>
+          <h1>Memory Match</h1>
+          <p>Test your memory skills and win amazing rewards!</p>
+          <!-- <img
+            src="/icons/hero-image.png"
+            alt="Memory Game"
+            class="hero-image floating"
+            onerror="this.style.display='none'"
+          /> -->
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+          <!-- Tabs -->
+          <div class="tabs">
+            <div class="tab active" data-tab="login">Login</div>
+            <div class="tab" data-tab="signup">Sign Up</div>
+            <div class="tab-indicator"></div>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="auth-form active">
+            <h2 class="form-title">Welcome Back!</h2>
+            <p class="form-subtitle">Please enter your details to login</p>
+
+            <div class="message error-message" id="loginError"></div>
+
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <input
+                type="email"
+                id="loginEmail"
+                class="form-control"
+                required
+                placeholder="Enter your email"
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <div class="password-container">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  class="form-control"
+                  required
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                />
+                <i
+                  class="fas fa-eye password-toggle"
+                  onclick="togglePassword('loginPassword', this)"
+                  aria-hidden="true"
+                ></i>
+              </div>
+            </div>
+
+            <div class="form-group" style="text-align: right">
+              <a
+                href="#"
+                style="
+                  color: var(--primary);
+                  text-decoration: none;
+                  font-size: 14px;
+                "
+                >Forgot password?</a
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
+            </button>
+
+            <div class="divider">or continue with</div>
+
+            <button type="button" class="btn btn-google" id="googleSignIn">
+              <i class="fab fa-google" aria-hidden="true"></i> Google
+            </button>
+
+            <div class="form-footer">
+              Don't have an account?
+              <a href="#" class="switch-tab" data-tab="signup">Sign up</a>
+            </div>
+          </form>
 
           <!-- Signup Form -->
-          <div class="form-section">
-            <h2>Create Account</h2>
-            <form id="signupForm">
-              <div class="form-group">
-                <label for="signupName">Full Name</label>
+          <form id="signupForm" class="auth-form">
+            <h2 class="form-title">Create Account</h2>
+            <p class="form-subtitle">Join us to start playing today!</p>
+
+            <div class="message error-message" id="signupError"></div>
+            <div class="message success-message" id="signupSuccess"></div>
+
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <input
+                type="text"
+                id="signupName"
+                class="form-control"
+                required
+                placeholder="Enter your full name"
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="signupPhone">Phone Number</label>
+              <input
+                type="tel"
+                id="signupPhone"
+                class="form-control"
+                required
+                placeholder="Enter your phone number"
+                autocomplete="tel"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <input
+                type="email"
+                id="signupEmail"
+                class="form-control"
+                required
+                placeholder="Enter your email"
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <div class="password-container">
                 <input
-                  type="text"
-                  id="signupName"
+                  type="password"
+                  id="signupPassword"
+                  class="form-control"
                   required
-                  placeholder="Enter your full name"
+                  placeholder="Create a password"
+                  minlength="6"
+                  autocomplete="new-password"
                 />
+                <i
+                  class="fas fa-eye password-toggle"
+                  onclick="togglePassword('signupPassword', this)"
+                  aria-hidden="true"
+                ></i>
               </div>
-              <div class="form-group">
-                <label for="signupPhone">Phone Number</label>
+            </div>
+
+            <div class="form-group">
+              <label for="signupConfirmPassword">Confirm Password</label>
+              <div class="password-container">
                 <input
-                  type="tel"
-                  id="signupPhone"
+                  type="password"
+                  id="signupConfirmPassword"
+                  class="form-control"
                   required
-                  placeholder="Enter your phone number"
+                  placeholder="Confirm your password"
+                  minlength="6"
+                  autocomplete="new-password"
                 />
+                <i
+                  class="fas fa-eye password-toggle"
+                  onclick="togglePassword('signupConfirmPassword', this)"
+                  aria-hidden="true"
+                ></i>
               </div>
-              <div class="form-group">
-                <label for="signupEmail">Email</label>
-                <input
-                  type="email"
-                  id="signupEmail"
-                  required
-                  placeholder="Enter your email"
-                />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-user-plus" aria-hidden="true"></i> Create Account
+            </button>
+
+            <div class="form-footer">
+              Already have an account?
+              <a href="#" class="switch-tab" data-tab="login">Login</a>
+            </div>
+          </form>
+
+          <!-- Install App Section -->
+          <div class="install-app" id="installApp">
+            <div class="install-app-header">
+              <div class="install-app-icon">
+                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
               </div>
-              <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <div class="password-container">
-                  <input
-                    type="password"
-                    id="signupPassword"
-                    required
-                    placeholder="Create a password"
-                    minlength="6"
-                  />
-                  <i
-                    class="fas fa-eye password-toggle"
-                    onclick="togglePassword('signupPassword', this)"
-                  ></i>
-                </div>
+              <div class="install-app-title">
+                <h3>Install Memory Match</h3>
+                <p>Add to your home screen for the best experience</p>
               </div>
-              <div class="form-group">
-                <label for="signupConfirmPassword">Confirm Password</label>
-                <div class="password-container">
-                  <input
-                    type="password"
-                    id="signupConfirmPassword"
-                    required
-                    placeholder="Confirm your password"
-                    minlength="6"
-                  />
-                  <i
-                    class="fas fa-eye password-toggle"
-                    onclick="togglePassword('signupConfirmPassword', this)"
-                  ></i>
-                </div>
-              </div>
-              <p class="error-message" id="signupError"></p>
-              <p class="success-message" id="signupSuccess"></p>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-user-plus" style="margin-right: 8px"></i> Sign
-                Up
-              </button>
-            </form>
-            <div class="debug-info" id="debugInfo"></div>
+            </div>
+            <button id="installBtn" class="install-btn">
+              <i class="fas fa-download" aria-hidden="true"></i> Install App
+            </button>
+          </div>
+
+          <!-- Social Login -->
+          <div class="social-login">
+            <div class="social-icon facebook" id="facebookSignIn">
+              <i class="fab fa-facebook-f" aria-hidden="true"></i>
+            </div>
+            <div class="social-icon twitter" id="twitterSignIn">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </div>
+            <div class="social-icon apple" id="appleSignIn">
+              <i class="fab fa-apple" aria-hidden="true"></i>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Offline notification -->
+    <div class="offline-notification" id="offlineNotification">
+      You are currently offline. Some features may be limited.
     </div>
 
     <!-- Firebase SDK -->
@@ -351,43 +845,55 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
+    <!-- Firebase Config - Move to separate file in production -->
+    <script src="js/firebase-config.js"></script>
+
     <script>
-      // Debug helper function
-      function showDebugInfo(msg) {
-        const debugInfo = document.getElementById("debugInfo");
-        debugInfo.style.display = "block";
-        debugInfo.innerHTML += msg + "<br>";
-        console.log(msg);
-      }
+      // Tab switching functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabs = document.querySelectorAll(".tab");
+        const tabIndicator = document.querySelector(".tab-indicator");
+        const forms = document.querySelectorAll(".auth-form");
+        const switchTabLinks = document.querySelectorAll(".switch-tab");
 
-      // Firebase configuration - ensure these values are correct
-      const firebaseConfig = {
-        apiKey: "AIzaSyCgOvIkDCcS3DFrt5f6Y7pYmjCoHIfDF9U",
-        authDomain: "moniebase-b4b4d.firebaseapp.com",
-        projectId: "moniebase-b4b4d",
-        storageBucket: "moniebase-b4b4d.appspot.com",
-        messagingSenderId: "1009678808253",
-        appId: "1:1009678808253:android:ff94e94c52bad2db7973d4",
-        databaseURL: "https://moniebase-b4b4d-default-rtdb.firebaseio.com/",
-      };
+        // Set initial tab indicator position
+        const activeTab = document.querySelector(".tab.active");
+        tabIndicator.style.width = `${activeTab.offsetWidth}px`;
+        tabIndicator.style.left = `${activeTab.offsetLeft}px`;
 
-      // Initialize Firebase
-      try {
-        firebase.initializeApp(firebaseConfig);
-        showDebugInfo("initialized successfully");
-      } catch (error) {
-        showDebugInfo("initialization error: " + error.message);
-      }
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            // Remove active class from all tabs and forms
+            tabs.forEach((t) => t.classList.remove("active"));
+            forms.forEach((f) => f.classList.remove("active"));
 
-      const auth = firebase.auth();
-      const database = firebase.database();
+            // Add active class to clicked tab
+            this.classList.add("active");
 
-      // DOM elements
-      const loginForm = document.getElementById("loginForm");
-      const signupForm = document.getElementById("signupForm");
-      const loginError = document.getElementById("loginError");
-      const signupError = document.getElementById("signupError");
-      const signupSuccess = document.getElementById("signupSuccess");
+            // Move tab indicator
+            tabIndicator.style.width = `${this.offsetWidth}px`;
+            tabIndicator.style.left = `${this.offsetLeft}px`;
+
+            // Show corresponding form
+            const tabName = this.getAttribute("data-tab");
+            document.getElementById(`${tabName}Form`).classList.add("active");
+          });
+        });
+
+        // Switch tab from links
+        switchTabLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const tabName = this.getAttribute("data-tab");
+            document.querySelector(`.tab[data-tab="${tabName}"]`).click();
+
+            // Smooth scroll to top of form
+            document.querySelector(".form-section").scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+      });
 
       // Toggle password visibility
       function togglePassword(inputId, icon) {
@@ -403,20 +909,36 @@
         }
       }
 
-      // Test database connection
-      function testDatabaseConnection() {
-        const testRef = database.ref(".info/connected");
-        testRef.on("value", (snap) => {
-          if (snap.val() === true) {
-            showDebugInfo("Connected");
-          } else {
-            showDebugInfo("Not connected");
-          }
-        });
+      // Initialize Firebase
+      try {
+        // Firebase configuration should be loaded from firebase-config.js
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+        document.getElementById("loginError").textContent =
+          "Could not connect to authentication service. Please try again later.";
+        document.getElementById("loginError").style.display = "block";
       }
 
-      // Run connection test
-      testDatabaseConnection();
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      // DOM elements
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      const loginError = document.getElementById("loginError");
+      const signupError = document.getElementById("signupError");
+      const signupSuccess = document.getElementById("signupSuccess");
+      const installAppSection = document.getElementById("installApp");
+      const installBtn = document.getElementById("installBtn");
+      const offlineNotification = document.getElementById(
+        "offlineNotification"
+      );
+      const googleSignIn = document.getElementById("googleSignIn");
+      const facebookSignIn = document.getElementById("facebookSignIn");
+      const twitterSignIn = document.getElementById("twitterSignIn");
+      const appleSignIn = document.getElementById("appleSignIn");
 
       // Login form submission
       loginForm.addEventListener("submit", function (e) {
@@ -426,6 +948,13 @@
 
         // Clear previous error messages
         loginError.style.display = "none";
+
+        // Validate inputs
+        if (!email || !password) {
+          loginError.textContent = "Please fill in all fields";
+          loginError.style.display = "block";
+          return;
+        }
 
         // Display loading state
         const loginButton = loginForm.querySelector("button");
@@ -438,15 +967,33 @@
           .signInWithEmailAndPassword(email, password)
           .then((userCredential) => {
             // Signed in successfully
-            showDebugInfo(
-              "Login successful for user: " + userCredential.user.uid
-            );
+            console.log("Login successful for user:", userCredential.user.uid);
             window.location.href = "dashboard.html";
           })
           .catch((error) => {
-            loginError.textContent = error.message;
+            // Handle specific error codes
+            switch (error.code) {
+              case "auth/user-not-found":
+                loginError.textContent =
+                  "No account found with this email address";
+                break;
+              case "auth/wrong-password":
+                loginError.textContent = "Incorrect password";
+                break;
+              case "auth/too-many-requests":
+                loginError.textContent =
+                  "Too many failed login attempts. Please try again later";
+                break;
+              case "auth/network-request-failed":
+                loginError.textContent =
+                  "Network error. Please check your connection";
+                break;
+              default:
+                loginError.textContent = error.message;
+            }
+
             loginError.style.display = "block";
-            showDebugInfo("Login error: " + error.message);
+            console.error("Login error:", error.message);
 
             // Reset button state
             loginButton.disabled = false;
@@ -468,6 +1015,13 @@
         // Clear previous messages
         signupError.style.display = "none";
         signupSuccess.style.display = "none";
+
+        // Validate inputs
+        if (!name || !phone || !email || !password || !confirmPassword) {
+          signupError.textContent = "Please fill in all fields";
+          signupError.style.display = "block";
+          return;
+        }
 
         // Display loading state
         const signupButton = signupForm.querySelector("button");
@@ -494,15 +1048,13 @@
           return;
         }
 
-        showDebugInfo("Creating user account...");
-
         // Create user with email and password
         auth
           .createUserWithEmailAndPassword(email, password)
           .then((userCredential) => {
             // User created successfully
             const user = userCredential.user;
-            showDebugInfo("User created with UID: " + user.uid);
+            console.log("User created with UID:", user.uid);
 
             // Show success message
             signupSuccess.textContent = "Account created! Saving your data...";
@@ -513,53 +1065,46 @@
               name: name,
               phone: phone,
               email: email,
-              balance: 0.0, // Starting balance
-              createdAt: Date.now(), // Use JavaScript timestamp instead of ServerValue
+              balance: 0.0,
+              createdAt: Date.now(),
             };
 
-            showDebugInfo("Saving user data to database...");
-
-            // Directly use the database reference
+            // Save user data to database
             return database.ref("/users/" + user.uid).set(userData);
           })
           .then(() => {
             // Data saved successfully
-            showDebugInfo("User data saved successfully!");
             signupSuccess.textContent =
               "Account created successfully! Redirecting to dashboard...";
-
-            // Test if the data was saved by trying to read it back
-            const currentUser = auth.currentUser;
-            if (currentUser) {
-              database
-                .ref("/users/" + currentUser.uid)
-                .once("value")
-                .then((snapshot) => {
-                  const userData = snapshot.val();
-                  if (userData) {
-                    showDebugInfo(
-                      "Verified data in database: " + JSON.stringify(userData)
-                    );
-                  } else {
-                    showDebugInfo(
-                      "WARNING: Data not found in database after saving!"
-                    );
-                  }
-                })
-                .catch((error) => {
-                  showDebugInfo("Error verifying data: " + error.message);
-                });
-            }
 
             // Wait before redirecting
             setTimeout(() => {
               window.location.href = "dashboard.html";
-            }, 3000); // Longer delay to see debug messages
+            }, 2000);
           })
           .catch((error) => {
-            signupError.textContent = error.message;
+            // Handle specific error codes
+            switch (error.code) {
+              case "auth/email-already-in-use":
+                signupError.textContent = "This email is already registered";
+                break;
+              case "auth/invalid-email":
+                signupError.textContent = "Please enter a valid email address";
+                break;
+              case "auth/weak-password":
+                signupError.textContent =
+                  "Password is too weak. Use a stronger password";
+                break;
+              case "auth/network-request-failed":
+                signupError.textContent =
+                  "Network error. Please check your connection";
+                break;
+              default:
+                signupError.textContent = error.message;
+            }
+
             signupError.style.display = "block";
-            showDebugInfo("Error during account creation: " + error.message);
+            console.error("Error during account creation:", error.message);
 
             // Reset button state
             signupButton.disabled = false;
@@ -567,34 +1112,158 @@
           });
       });
 
+      // Social sign-in handlers
+      googleSignIn.addEventListener("click", function () {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        signInWithProvider(provider);
+      });
+
+      facebookSignIn.addEventListener("click", function () {
+        const provider = new firebase.auth.FacebookAuthProvider();
+        signInWithProvider(provider);
+      });
+
+      twitterSignIn.addEventListener("click", function () {
+        const provider = new firebase.auth.TwitterAuthProvider();
+        signInWithProvider(provider);
+      });
+
+      appleSignIn.addEventListener("click", function () {
+        const provider = new firebase.auth.OAuthProvider("apple.com");
+        signInWithProvider(provider);
+      });
+
+      function signInWithProvider(provider) {
+        loginError.style.display = "none";
+
+        auth
+          .signInWithPopup(provider)
+          .then((result) => {
+            const user = result.user;
+            console.log("Social sign-in successful for user:", user.uid);
+
+            // Check if this is a new user
+            const isNewUser = result.additionalUserInfo.isNewUser;
+
+            if (isNewUser) {
+              // Save basic user data for new users
+              const userData = {
+                name: user.displayName || "User",
+                email: user.email,
+                phone: user.phoneNumber || "",
+                balance: 0.0,
+                createdAt: Date.now(),
+                photoURL: user.photoURL || "",
+              };
+
+              return database
+                .ref("/users/" + user.uid)
+                .set(userData)
+                .then(() => {
+                  window.location.href = "dashboard.html";
+                });
+            } else {
+              window.location.href = "dashboard.html";
+            }
+          })
+          .catch((error) => {
+            loginError.textContent = "Social sign-in failed: " + error.message;
+            loginError.style.display = "block";
+            console.error("Social sign-in error:", error);
+          });
+      }
+
       // Check if user is already logged in
       auth.onAuthStateChanged((user) => {
         if (user) {
-          showDebugInfo("User already logged in: " + user.uid);
-
-          // Check if user data exists in database
-          database
-            .ref("/users/" + user.uid)
-            .once("value")
-            .then((snapshot) => {
-              const userData = snapshot.val();
-              if (userData) {
-                showDebugInfo("User data found in database");
-                window.location.href = "dashboard.html";
-              } else {
-                showDebugInfo(
-                  "User is authenticated but no data found in database"
-                );
-                auth.signOut();
-              }
-            })
-            .catch((error) => {
-              showDebugInfo("Error checking user data: " + error.message);
-            });
+          console.log("User already logged in:", user.uid);
+          window.location.href = "dashboard.html";
         } else {
-          showDebugInfo("No user currently logged in");
+          console.log("No user currently logged in");
         }
       });
+
+      // Add animation to form inputs when focused
+      document.querySelectorAll(".form-control").forEach((input) => {
+        input.addEventListener("focus", function () {
+          this.parentElement.style.transform = "translateY(-2px)";
+        });
+
+        input.addEventListener("blur", function () {
+          this.parentElement.style.transform = "translateY(0)";
+        });
+      });
+
+      // PWA Installation
+      let deferredPrompt;
+
+      // Hide install button initially
+      installApp.style.display = "none";
+
+      // Check if the app can be installed
+      window.addEventListener("beforeinstallprompt", (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        // Show the install button
+        installApp.classList.add("show");
+      });
+
+      // Install button click handler
+      installBtn.addEventListener("click", async () => {
+        if (!deferredPrompt) {
+          return;
+        }
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        // We've used the prompt, and can't use it again, throw it away
+        deferredPrompt = null;
+        // Hide the install button
+        installApp.classList.remove("show");
+      });
+
+      // Listen for successful installation
+      window.addEventListener("appinstalled", (evt) => {
+        console.log("Memory Match Game has been installed");
+        // Hide the install button after successful installation
+        installApp.classList.remove("show");
+      });
+
+      // Register service worker for PWA
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((registration) => {
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope
+              );
+            })
+            .catch((error) => {
+              console.error("Service Worker registration failed:", error);
+            });
+        });
+      }
+
+      // Network status monitoring
+      function updateOnlineStatus() {
+        if (navigator.onLine) {
+          offlineNotification.classList.remove("show");
+        } else {
+          offlineNotification.classList.add("show");
+        }
+      }
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+
+      // Initial check
+      updateOnlineStatus();
     </script>
   </body>
 </html>
