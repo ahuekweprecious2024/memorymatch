@@ -1272,5 +1272,53 @@
       // Initial check
       updateOnlineStatus();
     </script>
+    <!-- Update the service worker registration code -->
+<script>
+  // Register service worker for PWA
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      // Check if we're running on a supported protocol
+      if (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then((registration) => {
+            console.log(
+              "Service Worker registered with scope:",
+              registration.scope
+            );
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      } else {
+        console.warn("Service Worker registration skipped: Not running on HTTPS or localhost");
+        // Show a message to the user about PWA limitations
+        const installAppSection = document.getElementById("installApp");
+        if (installAppSection) {
+          installAppSection.innerHTML = `
+            <div class="install-app-header">
+              <div class="install-app-icon">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+              </div>
+              <div class="install-app-title">
+                <h3>PWA Features Limited</h3>
+                <p>Please use a web server to enable all app features</p>
+              </div>
+            </div>
+            <div style="margin-top: 10px; font-size: 14px;">
+              <p>To test PWA features locally, use one of these methods:</p>
+              <ul style="margin-left: 20px; margin-top: 5px;">
+                <li>Use a local development server</li>
+                <li>Deploy to a hosting service with HTTPS</li>
+              </ul>
+            </div>
+          `;
+          installAppSection.style.display = "block";
+          installAppSection.classList.add("show");
+        }
+      }
+    });
+  }
+</script>
   </body>
 </html>
