@@ -488,29 +488,67 @@
         }
       }
 
-      /* Install App Section */
-      .install-app {
+      /* Install App Popup */
+      .install-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         background: linear-gradient(135deg, #4cc9f0, #4361ee);
         border-radius: 12px;
         padding: 20px;
-        margin-top: 20px;
+        width: 90%;
+        max-width: 400px;
+        z-index: 1000;
         display: none;
         animation: fadeIn 0.5s ease;
-        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
       }
 
-      .install-app.show {
+      .install-popup.show {
         display: block;
       }
 
-      .install-app-header {
+      .install-popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+
+      .install-popup-overlay.show {
+        display: block;
+      }
+
+      .install-popup-header {
         display: flex;
         align-items: center;
         gap: 15px;
         margin-bottom: 15px;
       }
 
-      .install-app-icon {
+      .install-popup-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+      }
+
+      .install-popup-close:hover {
+        opacity: 1;
+      }
+
+      .install-popup-icon {
         width: 50px;
         height: 50px;
         border-radius: 12px;
@@ -523,16 +561,16 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
 
-      .install-app-title {
+      .install-popup-title {
         color: white;
       }
 
-      .install-app-title h3 {
+      .install-popup-title h3 {
         font-size: 18px;
         margin-bottom: 5px;
       }
 
-      .install-app-title p {
+      .install-popup-title p {
         font-size: 14px;
         opacity: 0.9;
       }
@@ -626,12 +664,6 @@
           </div>
           <h1>Memory Match</h1>
           <p>Test your memory skills and win amazing rewards!</p>
-          <!-- <img
-            src="/icons/hero-image.png"
-            alt="Memory Game"
-            class="hero-image floating"
-            onerror="this.style.display='none'"
-          /> -->
         </div>
 
         <!-- Form Section -->
@@ -803,22 +835,6 @@
             </div>
           </form>
 
-          <!-- Install App Section -->
-          <div class="install-app" id="installApp">
-            <div class="install-app-header">
-              <div class="install-app-icon">
-                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
-              </div>
-              <div class="install-app-title">
-                <h3>Install Memory Match</h3>
-                <p>Add to your home screen for the best experience</p>
-              </div>
-            </div>
-            <button id="installBtn" class="install-btn">
-              <i class="fas fa-download" aria-hidden="true"></i> Install App
-            </button>
-          </div>
-
           <!-- Social Login -->
           <div class="social-login">
             <div class="social-icon facebook" id="facebookSignIn">
@@ -833,6 +849,26 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Install App Popup -->
+    <div class="install-popup-overlay" id="installPopupOverlay"></div>
+    <div class="install-popup" id="installPopup">
+      <button class="install-popup-close" id="closeInstallPopup">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="install-popup-header">
+        <div class="install-popup-icon">
+          <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+        </div>
+        <div class="install-popup-title">
+          <h3>Install Memory Match</h3>
+          <p>Add to your home screen for the best experience</p>
+        </div>
+      </div>
+      <button id="installBtn" class="install-btn">
+        <i class="fas fa-download" aria-hidden="true"></i> Install App
+      </button>
     </div>
 
     <!-- Offline notification -->
@@ -937,7 +973,11 @@
       const loginError = document.getElementById("loginError");
       const signupError = document.getElementById("signupError");
       const signupSuccess = document.getElementById("signupSuccess");
-      const installAppSection = document.getElementById("installApp");
+      const installPopup = document.getElementById("installPopup");
+      const installPopupOverlay = document.getElementById(
+        "installPopupOverlay"
+      );
+      const closeInstallPopup = document.getElementById("closeInstallPopup");
       const installBtn = document.getElementById("installBtn");
       const offlineNotification = document.getElementById(
         "offlineNotification"
@@ -1204,17 +1244,27 @@
       // PWA Installation
       let deferredPrompt;
 
-      // Hide install button initially
-      installApp.style.display = "none";
-
       // Check if the app can be installed
       window.addEventListener("beforeinstallprompt", (e) => {
         // Prevent Chrome 67 and earlier from automatically showing the prompt
         e.preventDefault();
         // Stash the event so it can be triggered later
         deferredPrompt = e;
-        // Show the install button
-        installApp.classList.add("show");
+
+        // Show the install popup automatically on page load
+        // Only if the app is not already installed
+        if (!window.matchMedia("(display-mode: standalone)").matches) {
+          setTimeout(() => {
+            installPopup.classList.add("show");
+            installPopupOverlay.classList.add("show");
+          }, 1000); // Slight delay to ensure the page is loaded first
+        }
+      });
+
+      // Close install popup
+      closeInstallPopup.addEventListener("click", () => {
+        installPopup.classList.remove("show");
+        installPopupOverlay.classList.remove("show");
       });
 
       // Install button click handler
@@ -1229,31 +1279,44 @@
         console.log(`User response to the install prompt: ${outcome}`);
         // We've used the prompt, and can't use it again, throw it away
         deferredPrompt = null;
-        // Hide the install button
-        installApp.classList.remove("show");
+        // Hide the install popup
+        installPopup.classList.remove("show");
+        installPopupOverlay.classList.remove("show");
       });
 
       // Listen for successful installation
       window.addEventListener("appinstalled", (evt) => {
         console.log("Memory Match Game has been installed");
-        // Hide the install button after successful installation
-        installApp.classList.remove("show");
+        // Hide the install popup after successful installation
+        installPopup.classList.remove("show");
+        installPopupOverlay.classList.remove("show");
       });
 
       // Register service worker for PWA
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/service-worker.js")
-            .then((registration) => {
-              console.log(
-                "Service Worker registered with scope:",
-                registration.scope
-              );
-            })
-            .catch((error) => {
-              console.error("Service Worker registration failed:", error);
-            });
+          // Check if we're running on a supported protocol
+          if (
+            window.location.protocol === "https:" ||
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+          ) {
+            navigator.serviceWorker
+              .register("service-worker.js")
+              .then((registration) => {
+                console.log(
+                  "Service Worker registered with scope:",
+                  registration.scope
+                );
+              })
+              .catch((error) => {
+                console.error("Service Worker registration failed:", error);
+              });
+          } else {
+            console.warn(
+              "Service Worker registration skipped: Not running on HTTPS or localhost"
+            );
+          }
         });
       }
 
@@ -1271,54 +1334,42 @@
 
       // Initial check
       updateOnlineStatus();
-    </script>
-    <!-- Update the service worker registration code -->
-<script>
-  // Register service worker for PWA
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      // Check if we're running on a supported protocol
-      if (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then((registration) => {
-            console.log(
-              "Service Worker registered with scope:",
-              registration.scope
-            );
-          })
-          .catch((error) => {
-            console.error("Service Worker registration failed:", error);
-          });
-      } else {
-        console.warn("Service Worker registration skipped: Not running on HTTPS or localhost");
-        // Show a message to the user about PWA limitations
-        const installAppSection = document.getElementById("installApp");
-        if (installAppSection) {
-          installAppSection.innerHTML = `
-            <div class="install-app-header">
-              <div class="install-app-icon">
-                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+
+      // Fallback for browsers that don't support beforeinstallprompt
+      if (!window.matchMedia("(display-mode: standalone)").matches) {
+        // Check if the browser doesn't support beforeinstallprompt
+        if (
+          /iPhone|iPad|iPod/.test(navigator.userAgent) &&
+          !window.navigator.standalone
+        ) {
+          // For iOS devices, show a custom install instruction
+          setTimeout(() => {
+            installPopup.innerHTML = `
+              <button class="install-popup-close" id="closeIOSInstall">
+                <i class="fas fa-times"></i>
+              </button>
+              <div class="install-popup-header">
+                <div class="install-popup-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="install-popup-title">
+                  <h3>Install on iOS</h3>
+                  <p>Tap <i class="fas fa-share"></i> then "Add to Home Screen"</p>
+                </div>
               </div>
-              <div class="install-app-title">
-                <h3>PWA Features Limited</h3>
-                <p>Please use a web server to enable all app features</p>
-              </div>
-            </div>
-            <div style="margin-top: 10px; font-size: 14px;">
-              <p>To test PWA features locally, use one of these methods:</p>
-              <ul style="margin-left: 20px; margin-top: 5px;">
-                <li>Use a local development server</li>
-                <li>Deploy to a hosting service with HTTPS</li>
-              </ul>
-            </div>
-          `;
-          installAppSection.style.display = "block";
-          installAppSection.classList.add("show");
+            `;
+            installPopup.classList.add("show");
+            installPopupOverlay.classList.add("show");
+
+            document
+              .getElementById("closeIOSInstall")
+              .addEventListener("click", () => {
+                installPopup.classList.remove("show");
+                installPopupOverlay.classList.remove("show");
+              });
+          }, 1500);
         }
       }
-    });
-  }
-</script>
+    </script>
   </body>
 </html>
